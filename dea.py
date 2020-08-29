@@ -4,7 +4,7 @@
 # 2020-08-19 - Garland Culbreth
 # Center for Nonlinear Science, University of North Texas.
 # 
-# repo: 
+# Repo: 
 # https://github.com/garland-culbreth/Diffusion-Entropy-Analysis
 
 import matplotlib.pyplot as plt
@@ -111,8 +111,8 @@ def entropy(trajectory):
     Generates a range of window lengths L. Steps each one along 
     `trajectory` and computes the displacement of `trajectory` over 
     each window position. Bins these displacements, and divides by the 
-    sum of all bins to make the probability distribution `p`. Puts `p` 
-    into the equation for Shannon Entropy to get s(L). Repeats for all 
+    sum of all bins to make the probability distribution `P`. Puts `P` 
+    into the equation for Shannon Entropy to get S(L). Repeats for all 
     L in range `WindowLengths`.
 
     Parameters
@@ -122,7 +122,7 @@ def entropy(trajectory):
 
     Returns
     ----------
-    s : ndarray
+    S : ndarray
         Shannon Entropy values, S(L).
     window_lengths : ndarray
         Window lengths, L. 
@@ -131,7 +131,7 @@ def entropy(trajectory):
     ----------
     `tqdm()` makes the progress bar appear.
     """
-    s = []
+    S = []
     window_lengths = np.arange(1, int(0.25*len(trajectory)), 1)
     for L in tqdm(window_lengths):
         window_starts = np.arange(0, len(trajectory)-L, 1)
@@ -139,12 +139,12 @@ def entropy(trajectory):
         displacements = trajectory[window_ends] - trajectory[window_starts]
         bin_counts = np.bincount(displacements)
         bin_counts = bin_counts[bin_counts != 0]
-        p = bin_counts / np.sum(bin_counts)
-        s.append(-np.sum(p * np.log(p)))
-    return s, window_lengths
+        P = bin_counts / np.sum(bin_counts)
+        S.append(-np.sum(P * np.log(P)))
+    return S, window_lengths
 
 
-def get_scaling(s, L, start, stop):
+def get_scaling(S, L, start, stop):
     """
     Calculates scaling.
 
@@ -153,7 +153,7 @@ def get_scaling(s, L, start, stop):
 
     Parameters
     ----------
-    s : array_like
+    S : array_like
         Shannon Entropy values. 
     L : array_like
         Window Lengths. 
@@ -166,7 +166,7 @@ def get_scaling(s, L, start, stop):
     ----------
     L_slice : ndarray 
         The slice of window lengths L.
-    coefficients : ndarray
+    fit_coeffs : ndarray
         Slope and intercept of the fit. 
 
     Notes
@@ -176,10 +176,10 @@ def get_scaling(s, L, start, stop):
     Making a version that uses the `powerlaw` package instead would 
     be better...
     """
-    s_slice = s[start:stop]
+    S_slice = S[start:stop]
     L_slice = L[start:stop]
-    coefficients = np.polyfit(np.log(L_slice), s_slice, 1)
-    return L_slice, coefficients
+    fit_coeffs = np.polyfit(np.log(L_slice), S_slice, 1)
+    return L_slice, fit_coeffs
 
 
 def get_mu(delta):
@@ -231,12 +231,12 @@ def dea_no_stripes(data, start, stop):
     rounded_data = np.sign(data)
     event_array = find_events(rounded_data)
     diffusion_trajectory = make_trajectory(event_array)
-    s, L = entropy(diffusion_trajectory)
-    fit = get_scaling(s, L, start, stop)
+    S, L = entropy(diffusion_trajectory)
+    fit = get_scaling(S, L, start, stop)
     mu = get_mu(fit[1][0])
 
     fig = plt.figure(figsize=(6, 5))
-    plt.plot(L, s, linestyle='', marker='.')
+    plt.plot(L, S, linestyle='', marker='.')
     plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1],
              label='$\\delta = {}$'.format(np.round(fit[1][0], 3)))
     plt.plot([], [], linestyle='',
@@ -277,12 +277,12 @@ def dea_with_stripes(data, stripes, start, stop, data_plot):
     rounded_data = apply_stripes(data, stripes, data_plot)
     event_array = find_events(rounded_data)
     diffusion_trajectory = make_trajectory(event_array)
-    s, L = entropy(diffusion_trajectory)
-    fit = get_scaling(s, L, start, stop)
+    S, L = entropy(diffusion_trajectory)
+    fit = get_scaling(S, L, start, stop)
     mu = get_mu(fit[1][0])
 
     fig = plt.figure(figsize=(6, 5))
-    plt.plot(L, s, linestyle='', marker='.')
+    plt.plot(L, S, linestyle='', marker='.')
     plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1],
              label='$\\delta = {}$'.format(np.round(fit[1][0], 3)))
     plt.plot([], [], linestyle='',
