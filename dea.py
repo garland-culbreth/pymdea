@@ -1,10 +1,12 @@
-"""
-Diffusion Entropy Analysis, with Stripes  
 
-Garland Culbreth - Center for Nonlinear Science, University of North Texas.  
+# Diffusion Entropy Analysis, with Stripes  
+# 
+# 2020-08-19 - Garland Culbreth
+# Center for Nonlinear Science, University of North Texas.
+# 
+# repo: 
+# https://github.com/garland-culbreth/Diffusion-Entropy-Analysis
 
-Written 2020-08-19. 
-"""
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -14,22 +16,16 @@ from tqdm import tqdm
 plt.style.use('ggplot')
 
 
-length = 20000
-# Hurst = 0.7
-# fGnSample = fgn(Length, Hurst)
-# fBmSample = fbm(Length, Hurst)
-
-np.random.seed(0)
-random_steps = np.random.choice([-1, 1], length)
-random_steps[0] = 0  # always start from 0
-random_walk = np.cumsum(random_steps)
-
-# plt.figure(figsize = (6, 5))
-# plt.plot(random_walk)
-# plt.xlabel('t')
-# plt.ylabel('x(t)')
-# plt.title('Sample Data')
-# plt.show()
+def sample_data(length):
+    """Generates an array of sample data."""
+    # hurst = 0.7
+    # fGnSample = fgn(length, hurst)
+    # fBmSample = fbm(length, hurst)
+    np.random.seed(0)
+    random_steps = np.random.choice([-1, 1], length)
+    random_steps[0] = 0  # always start from 0
+    random_walk = np.cumsum(random_steps)
+    return random_walk
 
 
 def apply_stripes(data, stripes, show_plot):
@@ -249,7 +245,6 @@ def dea_no_stripes(data, start, stop):
     plt.xlabel('$ln(l)$')
     plt.ylabel('$S(l)$')
     plt.legend(loc=0)
-    plt.show()
     return fig
 
 
@@ -296,12 +291,11 @@ def dea_with_stripes(data, stripes, start, stop, data_plot):
     plt.xlabel('$ln(L)$')
     plt.ylabel('$S(L)$')
     plt.legend(loc=0)
-    plt.show()
     return fig
 
 
 ### ----WORK HERE---- ###
-data = random_walk
+data = sample_data(20000)
 number_of_stripes = 40  # needs to be at least 2
 fit_start = 40
 fit_stop = 800
@@ -312,3 +306,4 @@ result = dea_with_stripes(data,
                           fit_start,
                           fit_stop,
                           show_data_plot)
+plt.show()
