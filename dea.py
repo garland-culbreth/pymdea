@@ -6,6 +6,9 @@
 # 
 # Repo: 
 # https://github.com/garland-culbreth/Diffusion-Entropy-Analysis
+#
+# For detailed function docstrings and other information, see dea_demo.ipynb in
+# the repo.
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -45,24 +48,18 @@ def apply_stripes(data, stripes, show_plot):
     ----------
     rounded_data : ndarray
         data rounded to stripes number of equally spaced intervals.
-
-    Notes
-    ----------
-    The reason I use `floor()` and `ceil()` rather than just `round()`
-    is because `round()` puts the rounding thresholds at half-integers, 
-    while `floor()` and `ceil()` put them exactly at the integers. 
-    This makes no difference to the analysis, it just bothers me.
     """
     max_data = max(data)
     min_data = min(data)
     data_width = abs(max_data - min_data)
     stripe_size = data_width / stripes
-    rounded_data = []
-    for i in range(len(data)):
-        if data[i] >= 0:
-            rounded_data.append(np.floor(data[i] / stripe_size))
-        elif data[i] < 0:
-            rounded_data.append(np.ceil(data[i] / stripe_size))
+    rounded_data = data.copy()
+    rounded_data = np.where(rounded_data >= 0, 
+                            np.floor(rounded_data/stripe_size),
+                            rounded_data)
+    rounded_data = np.where(rounded_data < 0, 
+                            np.ceil(rounded_data/stripe_size),
+                            rounded_data)
     if show_plot == 1:
         lines = np.linspace(min_data, max_data, num=stripes)
         plt.figure(figsize=(6, 5))
@@ -283,7 +280,7 @@ def dea_with_stripes(data, stripes, start, stop, data_plot):
 
     fig = plt.figure(figsize=(6, 5))
     plt.plot(L, S, linestyle='', marker='.')
-    plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1],
+    plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1], color='k',
              label='$\\delta = {}$'.format(np.round(fit[1][0], 3)))
     plt.plot([], [], linestyle='',
              label='$\\mu = {}$'.format(np.round(mu, 3)))
@@ -297,8 +294,8 @@ def dea_with_stripes(data, stripes, start, stop, data_plot):
 ### ----WORK HERE---- ###
 data = sample_data(20000)
 number_of_stripes = 40  # needs to be at least 2
-fit_start = 40
-fit_stop = 800
+fit_start = 50
+fit_stop = 500
 show_data_plot = 0  # set to 1 to see plot of data with stripes
 
 result = dea_with_stripes(data,
