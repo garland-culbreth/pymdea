@@ -73,25 +73,11 @@ def apply_stripes(data, stripes, show_plot):
 
 
 def find_events(series):
-    """
-    Records an event when `series` changes value. 
-
-    Parameters
-    ----------
-    series : array_like
-        Data series rounded to the stripe intervals.
-
-    Returns
-    ----------
-    events : ndarray
-        1 if event occured at that time index, 0 if not.
-    """
-    events = []
-    for i in range(len(series)-1):
-        if series[i] != series[i+1]:
-            events.append(1)
-        else:
-            events.append(0)
+    """Records an event (1) when `series` changes value."""
+    events = np.zeros(len(series)-1)
+    events[np.diff(series) != 0] = 1
+    np.append(events, 0)
+    events = events.astype(int)
     return events
 
 
@@ -181,7 +167,7 @@ def get_scaling(S, L, start, stop):
 
 def get_mu(delta):
     """
-    Calculates the mu.
+    Calculates mu (powerlaw index of inter-event time distribution).
 
     Parameters
     ----------
