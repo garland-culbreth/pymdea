@@ -1,10 +1,10 @@
 
-# Diffusion Entropy Analysis, with Stripes  
-# 
+# Diffusion Entropy Analysis, with Stripes
+#
 # 2020-08-19 - Garland Culbreth
 # Center for Nonlinear Science, University of North Texas.
-# 
-# Repo: 
+#
+# Repo:
 # https://github.com/garland-culbreth/Diffusion-Entropy-Analysis
 #
 # For detailed function docstrings and other information, see dea_demo.ipynb in
@@ -54,10 +54,10 @@ def apply_stripes(data, stripes, show_plot):
     data_width = abs(max_data - min_data)
     stripe_size = data_width / stripes
     rounded_data = data.copy()
-    rounded_data = np.where(rounded_data >= 0, 
+    rounded_data = np.where(rounded_data >= 0,
                             np.floor(rounded_data/stripe_size),
                             rounded_data)
-    rounded_data = np.where(rounded_data < 0, 
+    rounded_data = np.where(rounded_data < 0,
                             np.ceil(rounded_data/stripe_size),
                             rounded_data)
     if show_plot == 1:
@@ -235,9 +235,9 @@ def dea_no_stripes(data, start, stop):
     fig = plt.figure(figsize=(6, 5))
     plt.plot(L, S, linestyle='', marker='.')
     plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1],
-             label='$\\delta = {}$'.format(np.round(fit[1][0], 3)))
+             label='$\\delta = {}$'.format(np.round(fit[1][0], 2)))
     plt.plot([], [], linestyle='',
-             label='$\\mu = {}$'.format(np.round(mu, 3)))
+             label='$\\mu = {}$'.format(np.round(mu, 2)))
     plt.xscale('log')
     plt.xlabel('$ln(l)$')
     plt.ylabel('$S(l)$')
@@ -280,10 +280,9 @@ def dea_with_stripes(data, stripes, start, stop, data_plot):
 
     fig = plt.figure(figsize=(6, 5))
     plt.plot(L, S, linestyle='', marker='.')
-    plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1], color='k',
-             label='$\\delta = {}$'.format(np.round(fit[1][0], 3)))
-    plt.plot([], [], linestyle='',
-             label='$\\mu = {}$'.format(np.round(mu, 3)))
+    plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1],
+             color='k', label='$\\delta = $'+str(np.round(fit[1][0], 2)))
+    plt.plot([], [], linestyle='', label='$\\mu = $'+str(np.round(mu, 2)))
     plt.xscale('log')
     plt.xlabel('$ln(L)$')
     plt.ylabel('$S(L)$')
@@ -295,7 +294,7 @@ def dea_with_stripes(data, stripes, start, stop, data_plot):
 data = sample_data(20000)
 number_of_stripes = 40  # needs to be at least 2
 fit_start = 50
-fit_stop = 500
+fit_stop = 400
 show_data_plot = 0  # set to 1 to see plot of data with stripes
 
 result = dea_with_stripes(data,
