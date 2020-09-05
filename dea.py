@@ -49,17 +49,15 @@ def apply_stripes(data, stripes, show_plot):
     rounded_data : ndarray
         data rounded to stripes number of equally spaced intervals.
     """
+    if min(data) <= 0:
+        data = data + abs(min(data))
+    elif min(data) > 0:
+        data = data - abs(min(data))
     max_data = max(data)
     min_data = min(data)
     data_width = abs(max_data - min_data)
     stripe_size = data_width / stripes
-    rounded_data = data.copy()
-    rounded_data = np.where(rounded_data >= 0,
-                            np.floor(rounded_data/stripe_size),
-                            rounded_data)
-    rounded_data = np.where(rounded_data < 0,
-                            np.ceil(rounded_data/stripe_size),
-                            rounded_data)
+    rounded_data = data / stripe_size
     if show_plot == 1:
         lines = np.linspace(min_data, max_data, num=stripes)
         plt.figure(figsize=(6, 5))
@@ -74,10 +72,15 @@ def apply_stripes(data, stripes, show_plot):
 
 def find_events(series):
     """Records an event (1) when `series` changes value."""
-    events = np.zeros(len(series)-1)
-    events[np.diff(series) != 0] = 1
+    """Records an event (1) when `series` changes value."""
+    events = []
+    for i in range(1, len(series)):
+        if (series[i] < np.floor(series[i-1])+1 and 
+            series[i] > np.ceil(series[i-1])-1):
+            events.append(0)
+        else:
+            events.append(1)
     np.append(events, 0)
-    events = events.astype(int)
     return events
 
 
@@ -124,6 +127,50 @@ def entropy(trajectory):
         bin_counts = bin_counts[bin_counts != 0]
         P = bin_counts / np.sum(bin_counts)
         S.append(-np.sum(P * np.log(P)))
+    return S, window_lengths
+
+
+def no_stripe_entropy(trajectory):
+    """
+    Calculates the Shannon Entropy of the diffusion trajectory.
+
+    Oridnary DEA function by David Lambert and Jacob Baxley,
+    vectorized by Garland Culbreth.
+    Generates a range of window lengths L. Steps each one along 
+    `trajectory` and computes the displacement of `trajectory` 
+    over each window position. Bins these displacements, and divides 
+    by the sum of all bins to make the probability distribution `p`. 
+    Puts `p` into the equation for Shannon Entropy to get s(L).
+    Repeats for all L in range `WindowLengths`.
+
+    Parameters
+    ----------
+    trajectory : array_like
+        Diffusion trajectory. FOR NO STRIPES JUST PASS THE DATA SERIES.
+
+    Returns
+    ----------
+    S : ndarray
+        Shannon Entropy values, S(L).
+    window_lengths : ndarray
+        Window lengths, L.
+
+    Notes
+    ----------
+    `tqdm()` makes the progress bar appear.
+    """
+    window_lengths = np.arange(1, int(0.25*len(data)), 1)
+    S = []
+    for L in tqdm(window_lengths):
+        window_starts = np.arange(0, len(trajectory)-L, 1)
+        window_ends = np.arange(L, len(trajectory), 1)
+        traj = trajectory[window_starts] - trajectory[window_ends]
+        # This part does the actual DEA computations
+        counts, bin_edge = np.histogram(traj, bins='doane')  # doane least bad
+        counts = np.array(counts[counts != 0])
+        binsize = bin_edge[1] - bin_edge[0]
+        P = counts / sum(counts)
+        S.append(-sum(P*np.log(P)) + np.log(binsize))
     return S, window_lengths
 
 
@@ -190,16 +237,15 @@ def dea_no_stripes(data, start, stop):
     """
     Applies DEA without the stripes refinement.
 
-    !!! WIP !!!
-    Takes signum function of your data, then runs DEA on the resulting 
-    rounded series. 
+    Original DEA. Takes the original time series as the diffusion 
+    trajectory. 
 
     Parameters
     ----------
     data : array_like
         Time-series to be analysed.
-    stripes : int
-        Number of stripes to be applied to the data.
+    asym : bool
+        True or False, whether to use asymmetric diffusion.
     start : int
         Array index at which to start linear fit.
     stop : int 
@@ -208,26 +254,24 @@ def dea_no_stripes(data, start, stop):
     Returns
     ----------
     figure 
-        A figure plotting S(l) vs. ln(l), overlaid with the fit line, 
-        labelled with the scaling and mu values.
+        A figure plotting S(l) vs. ln(l), overlaid with the fit 
+        line, labelled with the scaling and mu values.
     """
-    rounded_data = np.sign(data)
-    event_array = find_events(rounded_data)
-    diffusion_trajectory = make_trajectory(event_array)
-    S, L = entropy(diffusion_trajectory)
+    S, L = no_stripe_entropy(data)
     fit = get_scaling(S, L, start, stop)
     mu = get_mu(fit[1][0])
 
-    fig = plt.figure(figsize=(6, 5))
+    fig = plt.figure(figsize = (6, 5))
     plt.plot(L, S, linestyle='', marker='.')
-    plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1],
-             label='$\\delta = {}$'.format(np.round(fit[1][0], 2)))
-    plt.plot([], [], linestyle='',
-             label='$\\mu = {}$'.format(np.round(mu, 2)))
+    plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1], color='k',
+             label='$\delta = {}$'.format(np.round(fit[1][0], 2)))
+    plt.plot([], [], linestyle='', 
+             label='$\mu = {}$'.format(np.round(mu, 2)))
     plt.xscale('log')
     plt.xlabel('$ln(l)$')
     plt.ylabel('$S(l)$')
     plt.legend(loc=0)
+    # plt.show()
     return fig
 
 
@@ -266,7 +310,7 @@ def dea_with_stripes(data, stripes, start, stop, data_plot):
 
     fig = plt.figure(figsize=(6, 5))
     plt.plot(L, S, linestyle='', marker='.')
-    plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1],
+    plt.plot(fit[0], fit[1][0]*np.log(fit[0]) + fit[1][1],
              color='k', label='$\\delta = $'+str(np.round(fit[1][0], 2)))
     plt.plot([], [], linestyle='', label='$\\mu = $'+str(np.round(mu, 2)))
     plt.xscale('log')
