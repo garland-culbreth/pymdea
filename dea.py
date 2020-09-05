@@ -1,8 +1,10 @@
 
 # Diffusion Entropy Analysis, with Stripes
 #
-# 2020-08-19 - Garland Culbreth
+# Garland Culbreth, Jacob Baxley, David Lambert;
 # Center for Nonlinear Science, University of North Texas.
+#
+# 2020-08-19
 #
 # Repo:
 # https://github.com/garland-culbreth/Diffusion-Entropy-Analysis
@@ -24,7 +26,7 @@ def sample_data(length):
     # hurst = 0.7
     # fGnSample = fgn(length, hurst)
     # fBmSample = fbm(length, hurst)
-    np.random.seed(0)
+    np.random.seed(0)  # for baseline consistency
     random_steps = np.random.choice([-1, 1], length)
     random_steps[0] = 0  # always start from 0
     random_walk = np.cumsum(random_steps)
@@ -75,8 +77,8 @@ def find_events(series):
     """Records an event (1) when `series` changes value."""
     events = []
     for i in range(1, len(series)):
-        if (series[i] < np.floor(series[i-1])+1 and 
-            series[i] > np.ceil(series[i-1])-1):
+        if (series[i] < np.floor(series[i-1])+1 and
+                series[i] > np.ceil(series[i-1])-1):
             events.append(0)
         else:
             events.append(1)
@@ -134,8 +136,6 @@ def no_stripe_entropy(trajectory):
     """
     Calculates the Shannon Entropy of the diffusion trajectory.
 
-    Oridnary DEA function by David Lambert and Jacob Baxley,
-    vectorized by Garland Culbreth.
     Generates a range of window lengths L. Steps each one along 
     `trajectory` and computes the displacement of `trajectory` 
     over each window position. Bins these displacements, and divides 
@@ -261,12 +261,12 @@ def dea_no_stripes(data, start, stop):
     fit = get_scaling(S, L, start, stop)
     mu = get_mu(fit[1][0])
 
-    fig = plt.figure(figsize = (6, 5))
+    fig = plt.figure(figsize=(6, 5))
     plt.plot(L, S, linestyle='', marker='.')
     plt.plot(fit[0], fit[1][0] * np.log(fit[0]) + fit[1][1], color='k',
-             label='$\delta = {}$'.format(np.round(fit[1][0], 2)))
-    plt.plot([], [], linestyle='', 
-             label='$\mu = {}$'.format(np.round(mu, 2)))
+             label='$\\delta = $'+str(np.round(fit[1][0], 2)))
+    plt.plot([], [], linestyle='',
+             label='$\\mu = $'+str(np.round(mu, 2)))
     plt.xscale('log')
     plt.xlabel('$ln(l)$')
     plt.ylabel('$S(l)$')
