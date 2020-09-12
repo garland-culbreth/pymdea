@@ -164,9 +164,8 @@ def no_stripe_entropy(trajectory):
     for L in tqdm(window_lengths):
         window_starts = np.arange(0, len(trajectory)-L, 1)
         window_ends = np.arange(L, len(trajectory), 1)
-        traj = trajectory[window_starts] - trajectory[window_ends]
-        # This part does the actual DEA computations
-        counts, bin_edge = np.histogram(traj, bins='doane')  # doane least bad
+        displacements = trajectory[window_starts] - trajectory[window_ends]
+        counts, bin_edge = np.histogram(displacements, bins='doane')
         counts = np.array(counts[counts != 0])
         binsize = bin_edge[1] - bin_edge[0]
         P = counts / sum(counts)
