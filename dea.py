@@ -341,8 +341,8 @@ def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
 
 def run_dea_no_stripes(
         data: Union[np.ndarray[float], pl.Series],
-        start: int,
-        stop: int,
+        fit_start: int,
+        fit_stop: int,
         fit_method: str = "siegel"
     ) -> None:
     """
@@ -370,7 +370,7 @@ def run_dea_no_stripes(
     """
     print("Beginning DEA without stripes.")
     S, L = get_no_stripe_entropy(data)
-    fit = get_scaling(S, L, start, stop, fit_method)
+    fit = get_scaling(S, L, fit_start, fit_stop, fit_method)
     mu = get_mu(fit[1][0])
 
     fig, ax = plt.subplots(figsize=(4, 3))
@@ -395,11 +395,11 @@ def run_dea_no_stripes(
 
 def run_dea_with_stripes(
         data: Union[np.ndarray[float], pl.Series],
-        stripes: int,
-        start: int,
-        stop: int,
+        number_of_stripes: int,
+        fit_start: int,
+        fit_stop: int,
+        fit_method: str = "siegel",
         show_data_plot: bool = False,
-        fit_method: str = "siegel"
     ) -> None:
     """
     Applies DEA with the stripes refinement.
@@ -411,16 +411,16 @@ def run_dea_with_stripes(
     ----------
     data : array_like
         Time-series to be analysed.
-    stripes : int
+    number_of_stripes : int
         Number of stripes to be applied to the data.
-    start : int
+    fit_start : int
         Array index at which to start linear fit.
-    stop : int 
+    fit_stop : int 
         Array index at which to stop linear fit.
-    show_data_plot : bool
-        If True, show data plot with overlaid stripes.
     fit_method : str {"siegel", "theilsen", "ls"}, optional
         Linear fit method to use. By default "siegel"
+    show_data_plot : bool
+        If True, show data plot with overlaid stripes.
 
     Returns
     ----------
@@ -429,11 +429,11 @@ def run_dea_with_stripes(
         line, labelled with the scaling and mu values.
     """
     print("Beginning DEA with stripes.")
-    rounded_data = apply_stripes(data, stripes, show_data_plot)
+    rounded_data = apply_stripes(data, number_of_stripes, show_data_plot)
     event_array = get_events(rounded_data)
     diffusion_trajectory = make_trajectory(event_array)
     s, L = get_entropy(diffusion_trajectory)
-    fit = get_scaling(s, L, start, stop, fit_method)
+    fit = get_scaling(s, L, fit_start, fit_stop, fit_method)
     mu = get_mu(fit[1][0])
 
     fig, ax = plt.subplots(figsize=(4, 3))
