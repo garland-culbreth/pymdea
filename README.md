@@ -20,10 +20,9 @@ This file is a Python module containing all the functions which perform the diff
 
 ## Dependencies
 
-[NumPy](https://numpy.org/doc/stable/index.html),
-[Scipy.stats](https://docs.scipy.org/doc/scipy/reference/stats.html),
-[Polars](https://www.pola.rs/),
-[Seaborn](https://seaborn.pydata.org/),
-[Matplotlib](https://matplotlib.org/),
-[tqdm](https://tqdm.github.io/),
-
+[NumPy](https://numpy.org/doc/stable/index.html)
+[Scipy.stats](https://docs.scipy.org/doc/scipy/reference/stats.html)
+[Polars](https://www.pola.rs/)
+[Seaborn](https://seaborn.pydata.org/)
+[Matplotlib](https://matplotlib.org/)
+[tqdm](https://tqdm.github.io/)
