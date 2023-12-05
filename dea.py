@@ -3,16 +3,18 @@
 A collection of functions which run the diffusion entropy
 analysis algorithm for temporal complexity detection.
 """
+import os
 from typing import Union
 import time
 import numpy as np
+from scipy import stats
 import polars as pl
 import matplotlib.pyplot as plt
 import seaborn as sns
 from tqdm import tqdm
 
 
-def make_sample_data(length: int, seed: float = time.time) -> np.ndarray[float]:
+def make_sample_data(length: int, seed: float = time.time) -> np.ndarray:
     """Generates an array of sample data."""
     np.random.seed(seed)  # for baseline consistency 1010
     random_steps = np.random.choice([-1, 1], length)
@@ -43,7 +45,6 @@ def get_data(filepath: str) -> pl.DataFrame:
         CSV. Support for more types of files is a work in
         progress.
     """
-    import os
     filetype = os.path.splitext(filepath)[1]
     if filetype not in [".csv"]:
         raise ValueError("Parameter 'filetype' must be one of: ['.csv'].")
@@ -53,10 +54,10 @@ def get_data(filepath: str) -> pl.DataFrame:
 
 
 def apply_stripes(
-        data: Union[np.ndarray[float], pl.Series],
+        data: Union[np.ndarray, pl.Series],
         stripes: int,
         show_data_plot: bool = False
-    ) -> np.ndarray[float]: 
+    ) -> np.ndarray:
     """
     Rounds `data` to `stripes` evenly spaced intervals.
 
@@ -76,7 +77,7 @@ def apply_stripes(
     """
     if stripes < 2:
         raise ValueError("Parameter 'stripes' must be greater than 2.")
-    if show_data_plot == True:
+    if show_data_plot is True:
         lines = np.linspace(min(data), max(data), num=stripes)
         plt.figure(figsize=(5, 4))
         plt.plot(data)
@@ -93,7 +94,7 @@ def apply_stripes(
         plt.title('Data with stripes')
         sns.despine()
         plt.show()
-    
+
     if min(data) <= 0:
         data = data + abs(min(data))
     elif min(data) > 0:
@@ -106,13 +107,11 @@ def apply_stripes(
     return rounded_data
 
 
-def get_events(
-        series: Union[np.ndarray[float], pl.Series]
-    ) -> np.ndarray[float]:
+def get_events(series: Union[np.ndarray, pl.Series]) -> np.ndarray:
     """Records an event (1) when `series` changes value."""
     events = []
     for i in range(1, len(series)):
-        if (series[i] < np.floor(series[i-1])+1 and 
+        if (series[i] < np.floor(series[i-1])+1 and
             series[i] > np.ceil(series[i-1])-1):
             # if both true, no crossing
             events.append(0)
@@ -122,13 +121,13 @@ def get_events(
     return events
 
 
-def make_trajectory(events: np.ndarray[float]) -> list[float]:
+def make_trajectory(events: np.ndarray) -> list[float]:
     """Constructs diffusion trajectory from events."""
     trajectory = np.cumsum(events)
     return trajectory
 
 
-def get_entropy(trajectory: np.ndarray[float]) -> list[np.ndarray[float]]:
+def get_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
     """
     Calculates the Shannon Entropy of the diffusion trajectory.
 
@@ -136,7 +135,7 @@ def get_entropy(trajectory: np.ndarray[float]) -> list[np.ndarray[float]]:
     'trajectory' and computes the displacement of 'trajectory' 
     over each window position. Bins these displacements, and divides 
     by the sum of all bins to make the probability distribution 'p'. 
-    Puts 'p' into the equation for Shannon Entropy to get s(L).
+    Puts 'p' into the equation for Shannon Entropy to get S(L).
     Repeats for all L in range 'window_lengths'.
 
     Parameters
@@ -146,7 +145,7 @@ def get_entropy(trajectory: np.ndarray[float]) -> list[np.ndarray[float]]:
 
     Returns
     ----------
-    s : ndarray
+    entropies : ndarray
         Shannon Entropy values, S(L).
     window_lengths : ndarray
         Window lengths, L. 
@@ -155,31 +154,30 @@ def get_entropy(trajectory: np.ndarray[float]) -> list[np.ndarray[float]]:
     ----------
     'tqdm(...)' makes the progress bar appear.
     """
-    S = []
+    entropies = []
     window_lengths = np.arange(1, int(0.25*len(trajectory)), 1)
-    for L in tqdm(window_lengths):
-        window_starts = np.arange(0, len(trajectory)-L, 1)
-        window_ends = np.arange(L, len(trajectory), 1)
+    for window_length in tqdm(window_lengths):
+        window_starts = np.arange(0, len(trajectory)-window_length, 1)
+        window_ends = np.arange(window_length, len(trajectory), 1)
         displacements = trajectory[window_ends] - trajectory[window_starts]
         counts, bin_edge = np.histogram(displacements, bins='doane')
         counts = np.array(counts[counts != 0])
         binsize = bin_edge[1] - bin_edge[0]
-        P = counts / sum(counts)
-        S.append(-sum(P*np.log(P)) + np.log(binsize))
-    return S, window_lengths
+        distribution = counts / sum(counts)
+        entropies.append(-sum(distribution*np.log(distribution))
+                         + np.log(binsize))
+    return entropies, window_lengths
 
 
-def get_no_stripe_entropy(
-        trajectory: np.ndarray[float]
-    ) -> list[np.ndarray[float]]:
+def get_no_stripe_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
     """
     Calculates the Shannon Entropy of the diffusion trajectory.
 
-    Generates a range of window lengths L. Steps each one along 
+    Generates a range of window lengths window_length. Steps each one along 
     'trajectory' and computes the displacement of 'trajectory' 
     over each window position. Bins these displacements, and divides 
     by the sum of all bins to make the probability distribution 'p'. 
-    Puts 'p' into the equation for Shannon Entropy to get s(L).
+    Puts 'p' into the equation for Shannon Entropy to get S(L).
     Repeats for all L in range 'window_lengths'.
 
     Parameters
@@ -189,7 +187,7 @@ def get_no_stripe_entropy(
 
     Returns
     ----------
-    S : ndarray
+    entropies : ndarray
         Shannon Entropy values, S(L).
     window_lengths : ndarray
         Window lengths, L.
@@ -199,26 +197,28 @@ def get_no_stripe_entropy(
     `tqdm()` makes the progress bar appear.
     """
     window_lengths = np.arange(1, int(0.25*len(trajectory)), 1)
-    S = []
-    for L in tqdm(window_lengths):
-        window_starts = np.arange(0, len(trajectory)-L, 1)
-        window_ends = np.arange(L, len(trajectory), 1)
+    entropies = []
+    for window_length in tqdm(window_lengths):
+        window_starts = np.arange(0, len(trajectory)-window_length, 1)
+        window_ends = np.arange(window_length, len(trajectory), 1)
         traj = trajectory[window_starts] - trajectory[window_ends]
-        counts, bin_edge = np.histogram(traj, bins='doane')  # doane least bad for nongaussian
+        # Use bins='doane'; least bad for nongaussian
+        counts, bin_edge = np.histogram(traj, bins='doane')
         counts = np.array(counts[counts != 0])
         binsize = bin_edge[1] - bin_edge[0]
-        P = counts / sum(counts)
-        S.append(-sum(P*np.log(P)) + np.log(binsize))
-    return S, window_lengths
+        distribution = counts / sum(counts)
+        entropies.append(-sum(distribution*np.log(distribution))
+                         + np.log(binsize))
+    return entropies, window_lengths
 
 
 def get_scaling(
-        s: np.ndarray[float],
-        L: np.ndarray[float],
+        entropies: np.ndarray,
+        window_length: np.ndarray,
         start: list[float],
         stop: int,
         fit_method: str = "siegel"
-    ) -> list[np.ndarray[float]]:
+    ) -> list[np.ndarray]:
     """
     Calculates scaling.
     
@@ -227,9 +227,9 @@ def get_scaling(
 
     Parameters
     ----------
-    s : array_like
+    entropies : array_like
         Shannon Entropy values. 
-    L : array_like
+    window_length : array_like
         Window Lengths. 
     start : int
         Index at which to start the fit slice.
@@ -241,7 +241,7 @@ def get_scaling(
     Returns
     -------
     fit_slice_L : ndarray 
-        The slice of window lengths L.
+        The slice of window lengths window_length.
     coefficients : ndarray
         Slope and intercept of the fit. 
 
@@ -255,18 +255,18 @@ def get_scaling(
     https://arxiv.org/pdf/0706.1062.pdf.
     """
     if fit_method not in ["siegel", "theilsen", "ls"]:
-        raise ValueError("Parameter 'method' must be one of: ['siegel', 'theilsen', 'ls'].")
-    s_slice = s[start:stop]
-    L_slice = L[start:stop]
+        raise ValueError(
+            "Parameter 'method' must be one of: ['siegel', 'theilsen', 'ls']."
+        )
+    s_slice = entropies[start:stop]
+    length_slice = window_length[start:stop]
     if fit_method == "ls":
-        coefficients = np.polyfit(np.log(L_slice), s_slice, 1)
+        coefficients = np.polyfit(np.log(length_slice), s_slice, 1)
     if fit_method == "theilsen":
-        from scipy import stats
-        coefficients = stats.theilslopes(s_slice, np.log(L_slice))
+        coefficients = stats.theilslopes(s_slice, np.log(length_slice))
     if fit_method == "siegel":
-        from scipy import stats
-        coefficients = stats.siegelslopes(s_slice, np.log(L_slice))
-    return L_slice, coefficients
+        coefficients = stats.siegelslopes(s_slice, np.log(length_slice))
+    return length_slice, coefficients
 
 
 def get_mu(delta: float) -> list[float]:
@@ -295,26 +295,28 @@ def get_mu(delta: float) -> list[float]:
 
 
 def plot_results(
-        L: np.ndarray[float],
-        S: np.ndarray[float],
-        x_interval: np.ndarray[float],
+        window_length: np.ndarray,
+        entropies: np.ndarray,
+        x_interval: np.ndarray,
         slope: float,
         y_intercept: float,
         mu: float
     ) -> plt.axes:
+    """Plot the slope of entropy vs window length, principal result of DEA"""
     fig, ax = plt.subplots()
-    ax.plot(L, S, linestyle='', marker='.')
+    ax.plot(window_length, entropies, linestyle='', marker='.')
     ax.plot(
         x_interval,
         slope * np.log(x_interval) + y_intercept,
         color='k',
-        label=f'$\delta = {np.round(slope, 2)}$'
+        label=f'$\\delta = {np.round(slope, 2)}$'
     )
-    ax.plot([], [], linestyle='', label=f'$\mu = {np.round(mu, 2)}$')
+    ax.plot([], [], linestyle='', label=f'$\\mu = {np.round(mu, 2)}$')
     return ax
 
 
 def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
+    """Plots the possible values of mu."""
     x1 = np.linspace(1, 2, 100)
     x2 = np.linspace(2, 3, 100)
     x3 = np.linspace(3, 4, 100)
@@ -336,13 +338,11 @@ def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
     ax.grid(True)
     sns.despine(left=True, bottom=True)
     plt.show(fig)
-    return None
 
 
 def run_dea_no_stripes(
-        data: Union[np.ndarray[float], pl.Series],
-        fit_start: int,
-        fit_stop: int,
+        data: Union[np.ndarray, pl.Series],
+        fit_start: int, fit_stop: int,
         fit_method: str = "siegel"
     ) -> None:
     """
@@ -369,20 +369,20 @@ def run_dea_no_stripes(
         line, labelled with the scaling and mu values.
     """
     print("Beginning DEA without stripes.")
-    S, L = get_no_stripe_entropy(data)
-    fit = get_scaling(S, L, fit_start, fit_stop, fit_method)
+    entropies, window_length = get_no_stripe_entropy(data)
+    fit = get_scaling(entropies, window_length, fit_start, fit_stop, fit_method)
     mu = get_mu(fit[1][0])
 
     fig, ax = plt.subplots(figsize=(4, 3))
-    ax.plot(L, S, linestyle='', marker='.', alpha=0.5)
+    ax.plot(window_length, entropies, linestyle='', marker='.', alpha=0.5)
     ax.plot(
         fit[0],
         fit[1][0] * np.log(fit[0]) + fit[1][1],
         color='k',
-        label=f'$\delta = {np.round(fit[1][0], 3)}$'
+        label=f'$\\delta = {np.round(fit[1][0], 3)}$'
     )
     ax.plot(
-        [], [], linestyle='', label=f'$\mu = {np.round(mu, 3)}$')
+        [], [], linestyle='', label=f'$\\mu = {np.round(mu, 3)}$')
     ax.xscale('log')
     ax.xlabel('$ln(l)$')
     ax.ylabel('$S(l)$')
@@ -390,16 +390,15 @@ def run_dea_no_stripes(
     sns.despine()
     plt.show(fig)
     print("DEA without stripes complete.")
-    return None
 
 
 def run_dea_with_stripes(
-        data: Union[np.ndarray[float], pl.Series],
+        data: Union[np.ndarray, pl.Series],
         number_of_stripes: int,
         fit_start: int,
         fit_stop: int,
         fit_method: str = "siegel",
-        show_data_plot: bool = False,
+        show_data_plot: bool = False
     ) -> None:
     """
     Applies DEA with the stripes refinement.
@@ -432,17 +431,17 @@ def run_dea_with_stripes(
     rounded_data = apply_stripes(data, number_of_stripes, show_data_plot)
     event_array = get_events(rounded_data)
     diffusion_trajectory = make_trajectory(event_array)
-    s, L = get_entropy(diffusion_trajectory)
-    fit = get_scaling(s, L, fit_start, fit_stop, fit_method)
+    entropies, window_length = get_entropy(diffusion_trajectory)
+    fit = get_scaling(entropies, window_length, fit_start, fit_stop, fit_method)
     mu = get_mu(fit[1][0])
 
     fig, ax = plt.subplots(figsize=(4, 3))
-    ax.plot(L, s, linestyle='', marker='.', alpha=0.5)
+    ax.plot(window_length, entropies, linestyle='', marker='.', alpha=0.5)
     ax.plot(
         fit[0],
         fit[1][0] * np.log(fit[0]) + fit[1][1],
         color='k',
-        label=f'$\delta = {np.round(fit[1][0], 3)}$'
+        label=f'$\\delta = {np.round(fit[1][0], 3)}$'
     )
     ax.set_xscale('log')
     ax.set_xlabel('$ln(L)$')
@@ -453,4 +452,3 @@ def run_dea_with_stripes(
 
     plot_mu_candidates(fit[1][0], mu[0], mu[1])
     print("DEA with stripes complete.")
-    return None
