@@ -53,9 +53,11 @@ def get_data(filepath: str) -> pl.DataFrame:
     return data
 
 
-def apply_stripes(data: Union[np.ndarray, pl.Series],
-                  stripes: int,
-                  show_data_plot: bool = False) -> np.ndarray:
+def apply_stripes(
+        data: Union[np.ndarray, pl.Series],
+        stripes: int,
+        show_data_plot: bool = False
+    ) -> np.ndarray:
     """
     Rounds `data` to `stripes` evenly spaced intervals.
 
@@ -210,11 +212,13 @@ def get_no_stripe_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
     return entropies, window_lengths
 
 
-def get_scaling(entropies: np.ndarray,
-                window_length: np.ndarray,
-                start: list[float],
-                stop: int,
-                fit_method: str = "siegel") -> list[np.ndarray]:
+def get_scaling(
+        entropies: np.ndarray,
+        window_length: np.ndarray,
+        start: list[float],
+        stop: int,
+        fit_method: str = "siegel"
+    ) -> list[np.ndarray]:
     """
     Calculates scaling.
     
@@ -290,12 +294,14 @@ def get_mu(delta: float) -> list[float]:
     return mu1, mu2
 
 
-def plot_results(window_length: np.ndarray,
-                 entropies: np.ndarray,
-                 x_interval: np.ndarray,
-                 slope: float,
-                 y_intercept: float,
-                 mu: float) -> plt.axes:
+def plot_results(
+        window_length: np.ndarray,
+        entropies: np.ndarray,
+        x_interval: np.ndarray,
+        slope: float,
+        y_intercept: float,
+        mu: float
+    ) -> plt.axes:
     """Plot the slope of entropy vs window length, principal result of DEA"""
     fig, ax = plt.subplots()
     ax.plot(window_length, entropies, linestyle='', marker='.')
@@ -334,9 +340,11 @@ def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
     plt.show(fig)
 
 
-def run_dea_no_stripes(data: Union[np.ndarray, pl.Series],
-                       fit_start: int, fit_stop: int,
-                       fit_method: str = "siegel") -> None:
+def run_dea_no_stripes(
+        data: Union[np.ndarray, pl.Series],
+        fit_start: int, fit_stop: int,
+        fit_method: str = "siegel"
+    ) -> None:
     """
     Applies DEA without the stripes refinement.
 
@@ -384,12 +392,14 @@ def run_dea_no_stripes(data: Union[np.ndarray, pl.Series],
     print("DEA without stripes complete.")
 
 
-def run_dea_with_stripes(data: Union[np.ndarray, pl.Series],
-                         number_of_stripes: int,
-                         fit_start: int,
-                         fit_stop: int,
-                         fit_method: str = "siegel",
-                         show_data_plot: bool = False) -> None:
+def run_dea_with_stripes(
+        data: Union[np.ndarray, pl.Series],
+        number_of_stripes: int,
+        fit_start: int,
+        fit_stop: int,
+        fit_method: str = "siegel",
+        show_data_plot: bool = False
+    ) -> None:
     """
     Applies DEA with the stripes refinement.
 
