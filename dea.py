@@ -296,6 +296,7 @@ def plot_results(window_length: np.ndarray,
                  slope: float,
                  y_intercept: float,
                  mu: float) -> plt.axes:
+    """Plot the slope of entropy vs window length, principal result of DEA"""
     fig, ax = plt.subplots()
     ax.plot(window_length, entropies, linestyle='', marker='.')
     ax.plot(
