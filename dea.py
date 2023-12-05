@@ -75,7 +75,7 @@ def apply_stripes(data: Union[np.ndarray, pl.Series],
     """
     if stripes < 2:
         raise ValueError("Parameter 'stripes' must be greater than 2.")
-    if show_data_plot == True:
+    if show_data_plot is True:
         lines = np.linspace(min(data), max(data), num=stripes)
         plt.figure(figsize=(5, 4))
         plt.plot(data)
@@ -331,7 +331,6 @@ def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
     ax.grid(True)
     sns.despine(left=True, bottom=True)
     plt.show(fig)
-    return None
 
 
 def run_dea_no_stripes(data: Union[np.ndarray, pl.Series],
@@ -382,7 +381,6 @@ def run_dea_no_stripes(data: Union[np.ndarray, pl.Series],
     sns.despine()
     plt.show(fig)
     print("DEA without stripes complete.")
-    return None
 
 
 def run_dea_with_stripes(data: Union[np.ndarray, pl.Series],
@@ -443,4 +441,3 @@ def run_dea_with_stripes(data: Union[np.ndarray, pl.Series],
 
     plot_mu_candidates(fit[1][0], mu[0], mu[1])
     print("DEA with stripes complete.")
-    return None
