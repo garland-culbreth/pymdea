@@ -3,6 +3,7 @@
 A collection of functions which run the diffusion entropy
 analysis algorithm for temporal complexity detection.
 """
+import os
 from typing import Union
 import time
 import numpy as np
@@ -44,7 +45,6 @@ def get_data(filepath: str) -> pl.DataFrame:
         CSV. Support for more types of files is a work in
         progress.
     """
-    import os
     filetype = os.path.splitext(filepath)[1]
     if filetype not in [".csv"]:
         raise ValueError("Parameter 'filetype' must be one of: ['.csv'].")
@@ -302,9 +302,9 @@ def plot_results(window_length: np.ndarray,
         x_interval,
         slope * np.log(x_interval) + y_intercept,
         color='k',
-        label=f'$\delta = {np.round(slope, 2)}$'
+        label=f'$\\delta = {np.round(slope, 2)}$'
     )
-    ax.plot([], [], linestyle='', label=f'$\mu = {np.round(mu, 2)}$')
+    ax.plot([], [], linestyle='', label=f'$\\mu = {np.round(mu, 2)}$')
     return ax
 
 
@@ -371,10 +371,10 @@ def run_dea_no_stripes(data: Union[np.ndarray, pl.Series],
         fit[0],
         fit[1][0] * np.log(fit[0]) + fit[1][1],
         color='k',
-        label=f'$\delta = {np.round(fit[1][0], 3)}$'
+        label=f'$\\delta = {np.round(fit[1][0], 3)}$'
     )
     ax.plot(
-        [], [], linestyle='', label=f'$\mu = {np.round(mu, 3)}$')
+        [], [], linestyle='', label=f'$\\mu = {np.round(mu, 3)}$')
     ax.xscale('log')
     ax.xlabel('$ln(l)$')
     ax.ylabel('$S(l)$')
@@ -432,7 +432,7 @@ def run_dea_with_stripes(data: Union[np.ndarray, pl.Series],
         fit[0],
         fit[1][0] * np.log(fit[0]) + fit[1][1],
         color='k',
-        label=f'$\delta = {np.round(fit[1][0], 3)}$'
+        label=f'$\\delta = {np.round(fit[1][0], 3)}$'
     )
     ax.set_xscale('log')
     ax.set_xlabel('$ln(L)$')
