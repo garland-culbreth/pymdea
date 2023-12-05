@@ -56,8 +56,7 @@ def get_data(filepath: str) -> pl.DataFrame:
 def apply_stripes(
         data: Union[np.ndarray, pl.Series],
         stripes: int,
-        show_data_plot: bool = False
-    ) -> np.ndarray:
+        show_data_plot: bool = False) -> np.ndarray:
     """
     Rounds `data` to `stripes` evenly spaced intervals.
 
@@ -107,9 +106,7 @@ def apply_stripes(
     return rounded_data
 
 
-def get_events(
-        series: Union[np.ndarray, pl.Series]
-    ) -> np.ndarray:
+def get_events(series: Union[np.ndarray, pl.Series]) -> np.ndarray:
     """Records an event (1) when `series` changes value."""
     events = []
     for i in range(1, len(series)):
@@ -170,9 +167,7 @@ def get_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
     return S, window_lengths
 
 
-def get_no_stripe_entropy(
-        trajectory: np.ndarray
-    ) -> list[np.ndarray]:
+def get_no_stripe_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
     """
     Calculates the Shannon Entropy of the diffusion trajectory.
 
@@ -219,8 +214,7 @@ def get_scaling(
         window_length: np.ndarray,
         start: list[float],
         stop: int,
-        fit_method: str = "siegel"
-    ) -> list[np.ndarray]:
+        fit_method: str = "siegel") -> list[np.ndarray]:
     """
     Calculates scaling.
     
@@ -300,8 +294,7 @@ def plot_results(
         x_interval: np.ndarray,
         slope: float,
         y_intercept: float,
-        mu: float
-    ) -> plt.axes:
+        mu: float) -> plt.axes:
     fig, ax = plt.subplots()
     ax.plot(window_length, S, linestyle='', marker='.')
     ax.plot(
@@ -343,8 +336,7 @@ def run_dea_no_stripes(
         data: Union[np.ndarray, pl.Series],
         fit_start: int,
         fit_stop: int,
-        fit_method: str = "siegel"
-    ) -> None:
+        fit_method: str = "siegel") -> None:
     """
     Applies DEA without the stripes refinement.
 
@@ -399,8 +391,7 @@ def run_dea_with_stripes(
         fit_start: int,
         fit_stop: int,
         fit_method: str = "siegel",
-        show_data_plot: bool = False,
-    ) -> None:
+        show_data_plot: bool = False) -> None:
     """
     Applies DEA with the stripes refinement.
 
