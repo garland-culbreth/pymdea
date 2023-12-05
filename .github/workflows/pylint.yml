@@ -18,6 +18,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pylint
+        pip install numpy
+        pip install scipy
+        pip install polars
+        pip install seaborn
+        pip install tqdm
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py')
