@@ -4,15 +4,14 @@ A collection of functions which run the diffusion entropy
 analysis algorithm for temporal complexity detection.
 """
 import os
-from typing import Union
 import time
 import numpy as np
-from scipy import stats
 import polars as pl
 import matplotlib.pyplot as plt
 import seaborn as sns
+from typing import Union
+from scipy import stats
 from tqdm.notebook import tqdm
-
 
 def make_sample_data(length: int, seed: float = time.time) -> np.ndarray:
     """Generates an array of sample data."""
@@ -21,7 +20,6 @@ def make_sample_data(length: int, seed: float = time.time) -> np.ndarray:
     random_steps[0] = 0  # always start from 0
     random_walk = np.cumsum(random_steps)
     return random_walk
-
 
 def get_data(filepath: str) -> pl.DataFrame:
     """Convenience function for reading input data
@@ -52,7 +50,6 @@ def get_data(filepath: str) -> pl.DataFrame:
     if filetype == ".csv":
         data = pl.scan_csv(filepath)
     return data
-
 
 def apply_stripes(
         data: Union[np.ndarray, pl.Series],
@@ -107,7 +104,6 @@ def apply_stripes(
     rounded_data = data / stripe_size
     return rounded_data
 
-
 def get_events(series: Union[np.ndarray, pl.Series]) -> np.ndarray:
     """Records an event (1) when `series` changes value."""
     events = []
@@ -121,12 +117,10 @@ def get_events(series: Union[np.ndarray, pl.Series]) -> np.ndarray:
     np.append(events, 0)
     return events
 
-
 def make_trajectory(events: np.ndarray) -> list[float]:
     """Constructs diffusion trajectory from events."""
     trajectory = np.cumsum(events)
     return trajectory
-
 
 def get_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
     """
@@ -169,7 +163,6 @@ def get_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
                          + np.log(binsize))
     return entropies, window_lengths
 
-
 def get_no_stripe_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
     """
     Calculates the Shannon Entropy of the diffusion trajectory.
@@ -211,7 +204,6 @@ def get_no_stripe_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
         entropies.append(-sum(distribution*np.log(distribution))
                          + np.log(binsize))
     return entropies, window_lengths
-
 
 def get_scaling(
         entropies: np.ndarray,
@@ -268,7 +260,6 @@ def get_scaling(
         coefficients = stats.siegelslopes(s_slice, np.log(length_slice))
     return length_slice, coefficients
 
-
 def get_mu(delta: float) -> list[float]:
     """
     Calculates the mu.
@@ -292,7 +283,6 @@ def get_mu(delta: float) -> list[float]:
     mu1 = 1 + delta
     mu2 = 1 + (1 / delta)
     return mu1, mu2
-
 
 def plot_results(
         window_length: np.ndarray,
@@ -338,7 +328,6 @@ def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
     ax.grid(True)
     sns.despine(left=True, bottom=True)
     plt.show(fig)
-
 
 def run_dea_no_stripes(
         data: Union[np.ndarray, pl.Series],
@@ -391,7 +380,6 @@ def run_dea_no_stripes(
     sns.despine()
     plt.show(fig)
     print("DEA without stripes complete.")
-
 
 def run_dea_with_stripes(
         data: Union[np.ndarray, pl.Series],
