@@ -26,3 +26,5 @@ This file is a Python module containing all the functions which perform the diff
 [Seaborn](https://seaborn.pydata.org/)
 [Matplotlib](https://matplotlib.org/)
 [tqdm](https://tqdm.github.io/)
+[ipywidgets](https://ipywidgets.readthedocs.io/en/stable/)
+
