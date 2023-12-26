@@ -11,7 +11,7 @@ from scipy import stats
 import polars as pl
 import matplotlib.pyplot as plt
 import seaborn as sns
-from tqdm import tqdm
+from tqdm.notebook import tqdm
 
 
 def make_sample_data(length: int, seed: float = time.time) -> np.ndarray:
