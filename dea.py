@@ -46,8 +46,9 @@ def get_data(filepath: str) -> pl.DataFrame:
         progress.
     """
     filetype = os.path.splitext(filepath)[1]
-    if filetype not in [".csv"]:
-        raise ValueError("Parameter 'filetype' must be one of: ['.csv'].")
+    supported_types = [".csv"]
+    assert filetype in supported_types, f"'filetype' must be one of: \
+        {supported_types}."
     if filetype == ".csv":
         data = pl.scan_csv(filepath)
     return data
@@ -111,8 +112,8 @@ def get_events(series: Union[np.ndarray, pl.Series]) -> np.ndarray:
     """Records an event (1) when `series` changes value."""
     events = []
     for i in range(1, len(series)):
-        if (series[i] < np.floor(series[i-1])+1 and
-            series[i] > np.ceil(series[i-1])-1):
+        if (series[i] < np.floor(series[i-1]) + 1 and
+            series[i] > np.ceil(series[i-1]) - 1):
             # if both true, no crossing
             events.append(0)
         else:
@@ -215,7 +216,7 @@ def get_no_stripe_entropy(trajectory: np.ndarray) -> list[np.ndarray]:
 def get_scaling(
         entropies: np.ndarray,
         window_length: np.ndarray,
-        start: list[float],
+        start: int,
         stop: int,
         fit_method: str = "siegel"
     ) -> list[np.ndarray]:
@@ -254,10 +255,9 @@ def get_scaling(
     https://doi.org/10.1137/070710111.
     https://arxiv.org/pdf/0706.1062.pdf.
     """
-    if fit_method not in ["siegel", "theilsen", "ls"]:
-        raise ValueError(
-            "Parameter 'method' must be one of: ['siegel', 'theilsen', 'ls']."
-        )
+    supported_methods = ["siegel", "theilsen", "ls"]
+    assert fit_method in supported_methods, f"'method' must be one of: \
+        {supported_methods}"
     s_slice = entropies[start:stop]
     length_slice = window_length[start:stop]
     if fit_method == "ls":
@@ -312,7 +312,7 @@ def plot_results(
         label=f'$\\delta = {np.round(slope, 2)}$'
     )
     ax.plot([], [], linestyle='', label=f'$\\mu = {np.round(mu, 2)}$')
-    return ax
+    plt.show(fig)
 
 
 def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
@@ -342,7 +342,8 @@ def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
 
 def run_dea_no_stripes(
         data: Union[np.ndarray, pl.Series],
-        fit_start: int, fit_stop: int,
+        fit_start: int,
+        fit_stop: int,
         fit_method: str = "siegel"
     ) -> None:
     """
