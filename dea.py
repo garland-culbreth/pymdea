@@ -3,13 +3,13 @@
 A collection of functions which run the diffusion entropy
 analysis algorithm for temporal complexity detection.
 """
+from typing import Union
 import os
 import time
 import numpy as np
 import polars as pl
 import matplotlib.pyplot as plt
 import seaborn as sns
-from typing import Union
 from scipy import stats
 from tqdm.notebook import tqdm
 
@@ -329,7 +329,7 @@ def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
     sns.despine(left=True, bottom=True)
     plt.show(fig)
 
-def run_dea_no_stripes(
+def run_no_stripes(
         data: Union[np.ndarray, pl.Series],
         fit_start: int,
         fit_stop: int,
@@ -381,7 +381,7 @@ def run_dea_no_stripes(
     plt.show(fig)
     print("DEA without stripes complete.")
 
-def run_dea_with_stripes(
+def run_with_stripes(
         data: Union[np.ndarray, pl.Series],
         number_of_stripes: int,
         fit_start: int,
