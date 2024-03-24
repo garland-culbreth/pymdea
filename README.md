@@ -10,7 +10,7 @@ You will need to have an up-to-date Python installation, e.g., through [Anaconda
 
 ## Use
 
-Once you have cloned this repository to your local machine, use the `dea.ipynb` file to prepare your data and run the diffusion entropy analysis.
+Once you have cloned this repository to your local machine, use the `dea.ipynb` file to prepare your data and run the diffusion entropy analysis. A user guide and quick reference are provided on [the wiki](https://github.com/garland-culbreth/Diffusion-Entropy-Analysis/wiki).
 
 ### dea.ipynb
 This Jupyter notebook is for working with real data. It imports functions from the `dea.py` module to make code cells as simple as possible, and contains markdown discussing how to use the method and interpret the results.
