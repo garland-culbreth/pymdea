@@ -318,8 +318,24 @@ def plot_mu_candidates(delta: float, mu1: float, mu2: float) -> None:
     ax.plot(x1, y1, color='k')
     ax.plot(x2, y2, color='k')
     ax.plot(x3, y3, color='k')
-    ax.plot(mu1, delta, marker='o', label=f'$\\mu$ = {np.round(mu1, 2)}')
-    ax.plot(mu2, delta, marker='o', label=f'$\\mu$ = {np.round(mu2, 2)}')
+    ax.plot(
+        mu1,
+        delta,
+        marker='o',
+        fillstyle="none",
+        markeredgewidth=2,
+        linestyle='none',
+        label=f'$\\mu$ = {np.round(mu1, 2)}'
+    )
+    ax.plot(
+        mu2,
+        delta,
+        marker='o',
+        fillstyle="none",
+        markeredgewidth=2,
+        linestyle='none',
+        label=f'$\\mu$ = {np.round(mu2, 2)}'
+    )
     ax.set_xticks(ticks=np.linspace(1, 4, 7))
     ax.set_yticks(ticks=np.linspace(0, 1, 5))
     ax.set_xlabel('$\\mu$')
@@ -425,7 +441,14 @@ def run_with_stripes(
     mu = get_mu(fit[1][0])
 
     fig, ax = plt.subplots(figsize=(4, 3))
-    ax.plot(window_length, entropies, linestyle='', marker='.', alpha=0.5)
+    ax.plot(
+        window_length, entropies,
+        linestyle='none',
+        marker='o',
+        markersize=3,
+        fillstyle="none",
+        markeredgewidth=1
+    )
     ax.plot(
         fit[0],
         fit[1][0] * np.log(fit[0]) + fit[1][1],
