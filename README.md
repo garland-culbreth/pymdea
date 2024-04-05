@@ -15,8 +15,14 @@ Once you have cloned this repository to your local machine, use the `dea.ipynb` 
 ### dea.ipynb
 This Jupyter notebook is for working with real data. It imports functions from the `dea.py` module to make code cells as simple as possible, and contains markdown discussing how to use the method and interpret the results.
 
-### dea.py
-This file is a Python module containing all the functions which perform the diffusion entropy analysis.
+### dea/core.py
+This file is a Python module containing all the functions which perform the core of diffusion entropy analysis.
+
+### dea/util.py
+This file is a Python module containing utility helper functions.
+
+### dea/plot.py
+This file is a Python module containing plotting helper functions.
 
 ## Dependencies
 
