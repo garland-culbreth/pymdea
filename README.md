@@ -9,7 +9,7 @@ For further details about the method and how it works, please see []()
 
 ## Installation and use
 
-You'll need an up to date Python installation, e.g., through [uv](https://docs.astral.sh/uv/#python-management).
+You'll need an up to date Python installation, e.g., through [uv](https://docs.astral.sh/uv/#python-management). Once you have one, clone this repository to a location on your file system where you can work with the files.
 
 ## Build with
 
