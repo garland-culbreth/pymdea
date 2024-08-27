@@ -6,23 +6,11 @@ For an in-depth introduction to the method and how it works, please see [Culbret
 
 ## Installation
 
-You will need to have an up-to-date Python installation, e.g., through [Anaconda](https://www.anaconda.com/products/individual). Once you have a working Python install, clone this repository into a directory from which you can work with the files.
+You will need to have an up-to-date Python installation, e.g., [miniconda](https://docs.anaconda.com/free/miniconda/) or [uv](https://docs.astral.sh/uv/#python-management). Once you have a working Python install, clone this repository into a directory from which you can work with the files.
 
 ## Use
 
-Once you have cloned this repository to your local machine, use the `notebook.ipynb` file to prepare your data and run the diffusion entropy analysis. A user guide and quick reference are provided on [the wiki](https://github.com/garland-culbreth/Diffusion-Entropy-Analysis/wiki).
-
-### notebook.ipynb
-This Jupyter notebook is for working with real data. It imports methods from the `dea` modules to make code cells as simple as possible, and contains markdown discussing how to use the method and interpret the results.
-
-### dea/core.py
-This file is a Python module containing all the functions which perform the core of diffusion entropy analysis.
-
-### dea/util.py
-This file is a Python module containing utility helper functions.
-
-### dea/plot.py
-This file is a Python module containing plotting helper functions.
+A user guide and quick reference are provided on [the wiki](https://github.com/garland-culbreth/Diffusion-Entropy-Analysis/wiki).
 
 ## Dependencies
 
