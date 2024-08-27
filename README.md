@@ -5,7 +5,7 @@
 
 Diffusion Entropy Analysis is a time-series analysis method for detecting temporal scaling in a data set, such as particle motion, a seismograph, or an electroencephalograph signal. Diffusion Entropy Analysis converts a timeseries into a diffusion trajectory and uses the entropy of this trajectory to measure the temporal scaling in the data. This is accomplished by moving a window along the trajectory, then using the relationship between the natural logarithm of the length of the window and the Shannon entropy to extract the scaling of the time-series process.
 
-For further details about the method and how it works, please see []()
+For further details about the method and how it works, please see [Culbreth, G., Baxley, J. and Lambert, D., 2023. Detecting temporal scaling with modified diffusion entropy analysis. _arXiv preprint arXiv:2311.11453_](https://arxiv.org/abs/2311.11453).
 
 ## Installation and use
 
