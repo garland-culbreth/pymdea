@@ -18,7 +18,20 @@ class DeaPlotter:
         theme: Literal["ticks", "whitegrid", "darkgrid"] = "ticks",
         colors: Literal["muted", "deep", "Set2", "tab10"] = "muted",
     ) -> Self:
-        """Plot DEA results."""
+        """Plot DEA results.
+
+        Parameters
+        ----------
+        model : Self@DeaEngine
+            Object containing the results of a DEA analysis to be plotted.
+        theme : str {"ticks", "whitegrid", "darkgrid"}, optional, default: "ticks"
+            Name of a seaborn style. Passed through to
+            seaborn.set_theme().
+        colors : str {"muted", "deep", "Set2", "tab10"}, optional, default: "muted"
+            Name of a seaborn or matplotlib color palette. Passed
+            through to seaborn.set_theme().
+
+        """
         sns.set_theme(context="notebook", style=theme, palette=colors)
         self.window_lengths = model.window_lengths
         self.entropies = model.entropies
