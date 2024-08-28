@@ -14,6 +14,8 @@ For further details about the method and how it works, please see [Culbreth, G.,
 
 You'll need an up to date Python installation, e.g., through [uv](https://docs.astral.sh/uv/#python-management). Once you have one, clone this repository to a location on your file system where you can work with the files.
 
+A user guide is available in the [documentation](https://garland-culbreth.github.io/pymdea/).
+
 ## Built with
 
 [![numpy](https://img.shields.io/badge/numpy-013243?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)
