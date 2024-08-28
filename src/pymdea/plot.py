@@ -1,20 +1,24 @@
-"""Plotting functions"""
+"""Plotting functions."""
 
-from typing import Self, Literal
-import numpy as np
+from typing import Literal, Self
+
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 
 from pymdea.core import DeaEngine
 
 
 class DeaPlotter:
+    """Plot DEA results."""
+
     def __init__(
-        self,
+        self: Self,
         model: DeaEngine,
         theme: Literal["ticks", "whitegrid", "darkgrid"] = "ticks",
-        colors: Literal["muted", "deep", "Set2", "tab10"] = "muted"
+        colors: Literal["muted", "deep", "Set2", "tab10"] = "muted",
     ) -> Self:
+        """Plot DEA results."""
         sns.set_theme(context="notebook", style=theme, palette=colors)
         self.window_lengths = model.window_lengths
         self.entropies = model.entropies
@@ -23,20 +27,26 @@ class DeaPlotter:
         self.mu1 = model.mu1
         self.mu2 = model.mu2
 
-    def s_vs_l(self, fig_width: int = 4, fig_height: int = 3) -> plt.axes:
-        """Plot the slope of entropy vs window length, principal result of DEA"""
+    def s_vs_l(self: Self, fig_width: int = 4, fig_height: int = 3) -> None:
+        """Plot the slope of entropy vs window length.
+
+        Parameters
+        ----------
+        fig_width : int, optional, default: 4
+            Width, in inches, of the figure.
+        fig_height : int, optional, default: 3
+            Height, in inches, of the figure.
+
+        """
         x_line = np.linspace(start=1, stop=len(self.window_lengths), num=3)
         fig, ax = plt.subplots(figsize=(fig_width, fig_height))
         ax.plot(
             self.window_lengths,
             self.entropies,
             linestyle="none",
-            # marker="$\\circ$",
-            # markersize=5,
-            # markeredgewidth=0.5
             marker="o",
             markersize=3,
-            fillstyle="none"
+            fillstyle="none",
         )
         ax.plot(
             x_line,
@@ -51,8 +61,17 @@ class DeaPlotter:
         sns.despine(trim=True)
         plt.show(fig)
 
-    def mu_candidates(self, fig_width: int = 4, fig_height: int = 3) -> None:
-        """Plots the possible values of mu."""
+    def mu_candidates(self: Self, fig_width: int = 4, fig_height: int = 3) -> None:
+        """Plot the possible values of mu.
+
+        Parameters
+        ----------
+        fig_width : int, optional, default: 4
+            Width, in inches, of the figure.
+        fig_height : int, optional, default: 3
+            Height, in inches, of the figure.
+
+        """
         x1 = np.linspace(1, 2, 100)
         x2 = np.linspace(2, 3, 100)
         x3 = np.linspace(3, 4, 100)
@@ -89,6 +108,6 @@ class DeaPlotter:
         ax.set_xlabel("$\\mu$")
         ax.set_ylabel("$\\delta$")
         ax.legend(loc=0)
-        ax.grid(True)
+        ax.grid(visible=True)
         sns.despine(left=True, bottom=True)
         plt.show(fig)

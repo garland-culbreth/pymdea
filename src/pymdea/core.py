@@ -1,8 +1,9 @@
-"""Diffusion entropy analysis core methods"""
+"""Diffusion entropy analysis core methods."""
 
-from typing import Self, Literal
-import os
 import logging
+from pathlib import Path
+from typing import Literal, Self
+
 import numpy as np
 import polars as pl
 from scipy import stats
@@ -10,22 +11,36 @@ from tqdm import tqdm
 
 
 class DeaLoader:
-    def __init__(self) -> Self:
-        pass
+    """Load data for a diffusion entropy analysis."""
 
-    def make_sample_data(self, length: int = 100000, seed: int = 1) -> np.ndarray:
-        """Generates an array of sample data."""
-        np.random.seed(seed)  # for baseline consistency 1010
-        random_steps = np.random.choice([-1, 1], length)
-        random_steps[0] = 0  # always start from 0
-        random_walk = np.cumsum(random_steps)
+    def __init__(self: Self) -> Self:
+        """Load data for a diffusion entropy analysis."""
+
+    def make_sample_data(self: Self, length: int = 100000, seed: int = 1) -> np.ndarray:
+        """Generate an array of sample data.
+
+        Parameters
+        ----------
+        length : int, optional, default: 100000
+            Number of time-steps to produce in the sample data.
+        seed : int, optional, default: 1
+            Seed for random number generation.
+
+        Returns
+        -------
+        Self @ Loader
+            An instance of the Loader object.
+
+        """
+        rng = np.random.default_rng(seed=seed)
+        random_walk = rng.choice([-1, 1], size=length).cumsum()
+        random_walk[0] = 0  # always start from 0
         self.seed = seed
         self.data = random_walk
         return self
 
-    def read_data_file(self, filepath: str, column_name: str) -> pl.DataFrame:
-        """
-        Convenience function for reading input data
+    def read_data_file(self: Self, filepath: str, column_name: str) -> pl.DataFrame:
+        """Read input data from file.
 
         Parameters
         ----------
@@ -44,27 +59,31 @@ class DeaLoader:
 
         Raises
         ------
-        AssertionError
+        ValueError
             If filepath points to a file of type other than
             CSV. Support for more types of files is a work in
             progress.
+
         """
-        filetype = os.path.splitext(filepath)[1]
+        filepath = Path(filepath)
         supported_types = [".csv"]
-        assert (
-            filetype in supported_types
-        ), f"'filetype' must be one of: {supported_types}."
-        if filetype == ".csv":
+        if filepath.suffix not in supported_types:
+            msg = f"filetype must be one of: {supported_types}."
+            raise ValueError(msg)
+        if filepath.suffix == ".csv":
             self.data = pl.scan_csv(filepath).select(column_name).to_numpy()
         return self
 
 
 class DeaEngine:
-    def __init__(self, loader: DeaLoader) -> Self:
+    """Run diffusion entropy analysis."""
+
+    def __init__(self: Self, loader: DeaLoader) -> Self:
+        """Run diffusion entropy analysis."""
         self.data = loader.data
 
-    def _apply_stripes(self) -> Self:
-        """Rounds `data` to `stripes` evenly spaced intervals"""
+    def _apply_stripes(self: Self) -> Self:
+        """Round `data` to `stripes` evenly spaced intervals."""
         if np.min(self.data) <= 0:
             self.data = self.data + np.abs(np.min(self.data))
         elif np.min(self.data) > 0:
@@ -76,29 +95,26 @@ class DeaEngine:
         self.series = self.data / stripe_size
         return self
 
-    def _get_events(self) -> Self:
-        """Records an event (1) when `series` changes value."""
+    def _get_events(self: Self) -> Self:
+        """Record an event (1) when `series` changes value."""
         events = np.zeros(len(self.series))
         for i in range(1, len(self.series)):
-            if (
+            if not (
                 self.series[i] < np.floor(self.series[i - 1]) + 1
                 and self.series[i] > np.ceil(self.series[i - 1]) - 1
             ):
-                next  # if both true, no crossing
-            else:
                 events[i] = 1
         np.append(events, 0)
         self.events = events
         return self
 
-    def _make_trajectory(self) -> Self:
-        """Constructs diffusion trajectory from events."""
+    def _make_trajectory(self: Self) -> Self:
+        """Construct diffusion trajectory from events."""
         self.trajectory = np.cumsum(self.events)
         return self
 
-    def _get_entropy(self, window_stop: float = 0.25) -> Self:
-        """
-        Calculates the Shannon Entropy of the diffusion trajectory
+    def _calculate_entropy(self: Self, window_stop: float = 0.25) -> Self:
+        """Calculate the Shannon Entropy of the diffusion trajectory.
 
         Parameters
         ----------
@@ -106,6 +122,7 @@ class DeaEngine:
             Proportion of total data length at which to cap the maximum
             window length. Large window lengths rarely produce
             informative entropy.
+
         """
         entropies = []
         window_lengths = np.arange(1, int(window_stop * len(self.trajectory)), 1)
@@ -120,35 +137,143 @@ class DeaEngine:
             binsize = bin_edge[1] - bin_edge[0]
             distribution = counts / np.sum(counts)
             entropies.append(
-                -np.sum(distribution * np.log(distribution)) + np.log(binsize)
+                -np.sum(distribution * np.log(distribution)) + np.log(binsize),
             )
-        self.entropies = entropies
+        self.entropies = np.asarray(entropies)
         self.window_lengths = window_lengths
         return self
 
-    def get_scaling(
-        self,
+    def _calculate_scaling(self: Self) -> Self:
+        """Calculate scaling."""
+        s_slice = self.entropies[self.fit_start : self.fit_stop]
+        length_slice = self.window_lengths[self.fit_start : self.fit_stop]
+        if self.fit_method == "ls":
+            logging.warning(
+                """Least-squares linear fits can introduce systematic error when
+                applied to log-scale data. Prefer the more robust 'theilsen' or
+                'siegel' methods.""",
+            )
+            coefficients = np.polyfit(np.log(length_slice), s_slice, 1)
+        if self.fit_method == "theilsen":
+            coefficients = stats.theilslopes(s_slice, np.log(length_slice))
+        if self.fit_method == "siegel":
+            coefficients = stats.siegelslopes(s_slice, np.log(length_slice))
+        self.length_slice = length_slice
+        self.fit_coefficients = coefficients
+        self.delta = coefficients[0]
+        return self
+
+    def _calculate_mu(self: Self) -> Self:
+        """Calculate powerlaw index for inter-event time distribution.
+
+        - mu1 is the index calculated by the rule `1 + delta`.
+        - mu2 is the index calculated by the rule `1 + (1 / delta)`.
+
+        Returns
+        -------
+        Self @ Engine
+            Object containing the results and inputs of the diffusion
+            entropy analysis.
+
+        Notes
+        -----
+        mu is calculated by both rules. later both are plotted
+        against the line relating delta and mu, to hopefully
+        let users graphically determine the correct mu.
+
+        """
+        self.mu1 = 1 + self.delta
+        self.mu2 = 1 + (1 / self.delta)
+        return self
+
+    def print_result(self: Self) -> str:
+        """Print out result of analysis."""
+        self.result = "--------------------------------- \n"
+        self.result = self.result + "result \n"
+        self.result = self.result + f" δ: {self.delta} \n"
+        self.result = self.result + f" μ (rule 1): {self.mu1} \n"
+        self.result = self.result + f" μ (rule 2): {self.mu2} \n"
+        self.result = self.result + "---------------------------------"
+        print(self.result)  # noqa: T201
+        return self
+
+    def analyze_with_stripes(
+        self: Self,
         fit_start: int,
         fit_stop: int,
-        fit_method: str = "siegel",
+        fit_method: Literal["siegel", "theilsen", "ls"] = "siegel",
+        n_stripes: int = 20,
     ) -> Self:
-        """
-        Calculate scaling.
-
-        Calculates the scaling of the input time-series by performing
-        a linear fit over S(l) vs ln(l).
+        """Run a modified diffusion entropy analysis.
 
         Parameters
         ----------
         fit_start : int
-            Index at which to start the fit slice.
+            Array index at which to start linear fit.
         fit_stop : int
-            Index at which to stop the fit slice.
-        fit_method : str {"siegel", "theilsen", "ls"}, optional, default: "siegel"
-            Linear fit method to use.
+            Array index at which to stop linear fit.
+        fit_method : str {"siegel", "theilsen", "ls"}, optional
+            Linear fit method to use. By default "siegel"
+        n_stripes : int, optional, default: 20
+            Number of stripes to apply to input time-series during
+            analysis.
 
         Returns
+        -------
+        Self @ Engine
+            Object containing the results and inputs of the diffusion
+            entropy analysis.
+
+        Raises
+        ------
+        ValueError
+            If n_stripes < 2. At least two stripes must be applied for
+            DEA to provide a meaningful result.
+
+        Notes
+        -----
+        Prefer the siegel or theilsen methods. Least squares linear
+        fits can introduce bias when done over log-scale data, see
+        Clauset, A., Shalizi, C.R. and Newman, M.E., 2009. Power-law
+        distributions in empirical data. SIAM review, 51(4), pp.661-703.
+        https://doi.org/10.1137/070710111.
+        https://arxiv.org/pdf/0706.1062.pdf.
+
+        """
+        if n_stripes < 2:  # noqa: PLR2004
+            msg = "n_stripes must be greater than 1"
+            raise ValueError(msg)
+        self.number_of_stripes = n_stripes
+        self.fit_start = fit_start
+        self.fit_stop = fit_stop
+        self.fit_method = fit_method
+        self._apply_stripes()
+        self._get_events()
+        self._make_trajectory()
+        self._calculate_entropy()
+        self._calculate_scaling()
+        self._calculate_mu()
+        self.print_result()
+
+    def analyze_without_stripes(
+        self: Self,
+        fit_start: int,
+        fit_stop: int,
+        fit_method: Literal["siegel", "theilsen", "ls"] = "siegel",
+    ) -> Self:
+        """Run a modified diffusion entropy analysis.
+
+        Parameters
         ----------
+        fit_start : int
+            Array index at which to start linear fit.
+        fit_stop : int
+            Array index at which to stop linear fit.
+        fit_method : str {"siegel", "theilsen", "ls"}, optional
+            Linear fit method to use. By default "siegel"
+
+        Returns
+        -------
         Self @ Engine
             Object containing the results and inputs of the diffusion
             entropy analysis.
@@ -161,97 +286,13 @@ class DeaEngine:
         distributions in empirical data. SIAM review, 51(4), pp.661-703.
         https://doi.org/10.1137/070710111.
         https://arxiv.org/pdf/0706.1062.pdf.
+
         """
-        supported_methods = ["siegel", "theilsen", "ls"]
-        assert fit_method in supported_methods, f"""'method' must be one of:
-            {supported_methods}"""
-        s_slice = self.entropies[fit_start:fit_stop]
-        length_slice = self.window_lengths[fit_start:fit_stop]
-        if fit_method == "ls":
-            logging.warning(
-                """Least-squares linear fits can introduce systematic error when applied to log-scale data. Prefer the more robust 'theilsen' or 'siegel' methods."""
-            )
-            coefficients = np.polyfit(np.log(length_slice), s_slice, 1)
-        if fit_method == "theilsen":
-            coefficients = stats.theilslopes(s_slice, np.log(length_slice))
-        if fit_method == "siegel":
-            coefficients = stats.siegelslopes(s_slice, np.log(length_slice))
-        self.length_slice = length_slice
-        self.fit_coefficients = coefficients
-        self.delta = coefficients[0]
-        return self
-
-    def get_mu(self) -> Self:
-        """
-        Calculate powerlaw index for inter-event time distribution.
-
-        - mu1 is the index calculated by the rule `1 + delta`.
-        - mu2 is the index calculated by the rule `1 + (1 / delta)`.
-
-        Returns
-        ----------
-        Self @ Engine
-            Object containing the results and inputs of the diffusion
-            entropy analysis.
-
-        Notes
-        ----------
-        mu is calculated by both rules. later both are plotted
-        against the line relating delta and mu, to hopefully
-        let users graphically determine the correct mu.
-        """
-        self.mu1 = 1 + self.delta
-        self.mu2 = 1 + (1 / self.delta)
-        return self
-
-    def _print_results(self) -> Self:
-        """Print out results of analysis"""
-        print("---------------------------------")
-        print("result")
-        print(f" δ: {self.delta}")
-        print(f" μ (rule 1): {self.mu1}")
-        print(f" μ (rule 2): {self.mu2}")
-        print("---------------------------------")
-        return self
-
-    def analyze(
-        self,
-        fit_start: int,
-        fit_stop: int,
-        fit_method: Literal["siegel", "theilsen", "ls"] = "siegel",
-        use_stripes: bool = True,
-        n_stripes: int = 20
-    ) -> Self:
-        """
-        Runs a diffusion entropy analysis.
-
-        Parameters
-        ----------
-        fit_start : int
-            Array index at which to start linear fit.
-        fit_stop : int
-            Array index at which to stop linear fit.
-        fit_method : str {"siegel", "theilsen", "ls"}, optional
-            Linear fit method to use. By default "siegel"
-
-        Returns
-        ----------
-        Self @ Engine
-            Object containing the results and inputs of the diffusion
-            entropy analysis.
-        """
-        if use_stripes:
-            assert isinstance(n_stripes, int), "n_stripes must be an integer"
-            assert n_stripes > 1, "n_stripes must be greater than 1"
-        self.use_stripes = use_stripes
-        self.number_of_stripes = n_stripes
-        if self.use_stripes:
-            self._apply_stripes()
-            self._get_events()
-            self._make_trajectory()
-        else:
-            self.trajectory = self.data
-        self._get_entropy()
-        self.get_scaling(fit_start, fit_stop, fit_method)
-        self.get_mu()
-        self._print_results()
+        self.trajectory = self.data
+        self.fit_start = fit_start
+        self.fit_stop = fit_stop
+        self.fit_method = fit_method
+        self._calculate_entropy()
+        self._calculate_scaling()
+        self._calculate_mu()
+        self.print_result()

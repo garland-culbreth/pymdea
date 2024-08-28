@@ -1,0 +1,86 @@
+site_name: pymdea
+# site_url: https://mydomain.org/mysite
+repo_url: https://github.com/garland-culbreth/pymdea
+repo_name: pymdea
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            docstring_section_style: list
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            parameter_headings: true
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: true
+            show_root_toc_entry: false
+  - mkdocs-jupyter:
+      ignore_h1_titles: True
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: green
+      accent: green
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: green
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: green
+      accent: green
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tracking
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+      block_tag: 'pre'
+
+extra_javascript:
+  - ./javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home:
+    - index.md
+  - User guide:
+    - user-guide/getting-started.ipynb
+    - user-guide/tuning.md
+    - user-guide/interpreting.md
+    - user-guide/further-reading.md
+  - API reference:
+    - api-reference/core.md
+    - api-reference/plot.md
