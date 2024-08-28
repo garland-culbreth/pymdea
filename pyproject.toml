@@ -5,17 +5,28 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "logging>=0.4.9.6",
     "typing>=3.10.0.0",
+    "pathlib>=1.0.1",
     "tqdm>=4.66.5",
     "numpy>=2.1.0",
     "polars>=1.5.0",
     "matplotlib>=3.9.2",
     "seaborn>=0.13.2",
     "scipy>=1.14.1",
-    "logging>=0.4.9.6",
     "ipykernel>=6.29.5",
+    "mkdocs-material>=9.5.33",
+    "mkdocstrings[python]>=0.25.2",
+    "mkdocs-jupyter>=0.24.8",
 ]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["D104"]
+"tests/*.py" = ["S101"]
