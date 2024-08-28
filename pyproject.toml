@@ -9,6 +9,7 @@ dependencies = [
     "typing>=3.10.0.0",
     "pathlib>=1.0.1",
     "tqdm>=4.66.5",
+    "pytest>=8.3.2",
     "numpy>=2.1.0",
     "polars>=1.5.0",
     "matplotlib>=3.9.2",
