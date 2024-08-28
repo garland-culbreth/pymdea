@@ -21,3 +21,5 @@ You'll need an up to date Python installation, e.g., through [uv](https://docs.a
 [![tqdm](https://img.shields.io/badge/tqdm-FFC107?style=for-the-badge&logo=tqdm&logoColor=000000)](https://tqdm.github.io/)
 [![pytest](https://img.shields.io/badge/pytest-%230A9EDC?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/en/stable/)
 [![ruff](https://img.shields.io/badge/ruff-D7FF64?style=for-the-badge&logo=ruff&logoColor=000000)](https://docs.astral.sh/ruff/)
+[![material for mkdocs](https://img.shields.io/badge/material_for_mkdocs-%23526CFE?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
+[![mkdocstrings](https://img.shields.io/badge/mkdocstrings-%23526CFE?style=for-the-badge)](https://mkdocstrings.github.io/)
