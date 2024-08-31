@@ -6,10 +6,10 @@ from typing import Literal, Self
 
 import numpy as np
 import polars as pl
+import stochastic.continuous
+import stochastic.noise
 from scipy import stats
 from scipy.optimize import curve_fit
-from stochastic.continuous import FractionalBrownianMotion
-from stochastic.noise import ColoredNoise, FractionalGaussianNoise, GaussianNoise
 from tqdm import tqdm
 
 
@@ -78,16 +78,16 @@ class DeaLoader:
 
         """
         if kind == "gn":
-            process = GaussianNoise()
+            process = stochastic.noise.GaussianNoise()
             self.data = process.sample(length)
         if kind == "cn":
-            process = ColoredNoise(beta=a)
+            process = stochastic.noise.ColoredNoise(beta=a)
             self.data = process.sample(length)
         if kind == "fgn":
-            process = FractionalGaussianNoise(hurst=a)
+            process = stochastic.noise.FractionalGaussianNoise(hurst=a)
             self.data = process.sample(length)
         if kind == "fbm":
-            process = FractionalBrownianMotion(hurst=a)
+            process = stochastic.continuous.FractionalBrownianMotion(hurst=a)
             self.data = process.sample(length)
         return self
 
