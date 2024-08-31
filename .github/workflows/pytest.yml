@@ -20,7 +20,7 @@ jobs:
         pip install logging
         pip install typing
         pip install pathlib
-        pip install stochastic>=0.4.0
+        pip install stochastic
         pip install numpy
         pip install scipy
         pip install polars
