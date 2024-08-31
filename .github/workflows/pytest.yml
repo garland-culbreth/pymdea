@@ -26,6 +26,7 @@ jobs:
         pip install matplotlib
         pip install seaborn
         pip install tqdm
+        pip install stochastic
         pip install pytest
     - name: Running tests with pytest
       run: |
