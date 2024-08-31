@@ -1075,6 +1075,7 @@ dependencies = [
     { name = "pytest" },
     { name = "scipy" },
     { name = "seaborn" },
+    { name = "stochastic" },
     { name = "tqdm" },
     { name = "typing" },
 ]
@@ -1090,9 +1091,10 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.1.0" },
     { name = "pathlib", specifier = ">=1.0.1" },
     { name = "polars", specifier = ">=1.5.0" },
-    { name = "pytest" },
+    { name = "pytest", specifier = ">=8.3.2" },
     { name = "scipy", specifier = ">=1.14.1" },
     { name = "seaborn", specifier = ">=0.13.2" },
+    { name = "stochastic" },
     { name = "tqdm", specifier = ">=4.66.5" },
     { name = "typing", specifier = ">=3.10.0.0" },
 ]
@@ -1403,6 +1405,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/28/e3/55dcc2cfbc3ca9c29519eb6884dd1415ecb53b0e934862d3559ddcb7e20b/stack_data-0.6.3.tar.gz", hash = "sha256:836a778de4fec4dcd1dcd89ed8abff8a221f58308462e1c4aa2a3cf30148f0b9", size = 44707 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f1/7b/ce1eafaf1a76852e2ec9b22edecf1daa58175c090266e9f6c64afcd81d91/stack_data-0.6.3-py3-none-any.whl", hash = "sha256:d5558e0c25a4cb0853cddad3d77da9891a08cb85dd9f9f91b9f8cd66e511e695", size = 24521 },
+]
+
+[[package]]
+name = "stochastic"
+version = "0.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "scipy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fa/0c/55489755d37a8b63ea26729830ecc768ba4e188ddbfd8075e57fa58c128c/stochastic-0.4.0.tar.gz", hash = "sha256:75c70e537b7e8bfcb90de49bfcbe76c9448a24d38a13d0d5fac2b75779450057", size = 31671 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/fb/1bdf5bef80bb31369306290c308371a64aebf825029520602570135ea7f1/stochastic-0.4.0-py2.py3-none-any.whl", hash = "sha256:59bc3e1bc1c7b8645d996e36c3e75ed19b8397bac9de3f5ac7abaf07f37c3025", size = 43641 },
 ]
 
 [[package]]
