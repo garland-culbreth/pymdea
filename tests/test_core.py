@@ -20,6 +20,14 @@ class TestLoader:
         assert isinstance(dea_loader.data, np.ndarray), "Data is not a numpy ndarray."
         assert np.all(np.isfinite(dea_loader.data)), "Data contains non-finite values."
 
+    def test_make_diffusion_process(self: Self) -> Self:
+        """Test the make_diffusion_process method."""
+        dea_loader = DeaLoader()
+        dea_loader.make_diffusion_process()
+        assert hasattr(dea_loader, "data"), "Data is missing."
+        assert isinstance(dea_loader.data, np.ndarray), "Data is not a numpy ndarray."
+        assert np.all(np.isfinite(dea_loader.data)), "Data contains non-finite values."
+
 
 class TestEngine:
     """Tests for the DeaEngine."""

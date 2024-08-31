@@ -20,6 +20,7 @@ jobs:
         pip install logging
         pip install typing
         pip install pathlib
+        pip install stochastic
         pip install numpy
         pip install scipy
         pip install polars
@@ -30,4 +31,3 @@ jobs:
     - name: Running tests with pytest
       run: |
         pytest
-  
