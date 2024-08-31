@@ -6,6 +6,8 @@ from typing import Literal, Self
 
 import numpy as np
 import polars as pl
+import stochastic.continuous
+import stochastic.noise
 from scipy import stats
 from scipy.optimize import curve_fit
 from tqdm import tqdm
@@ -43,6 +45,50 @@ class DeaLoader:
         random_walk[0] = 0  # always start from 0
         self.seed = seed
         self.data = random_walk
+        return self
+
+    def make_diffusion_process(
+        self: Self,
+        kind: Literal["cn", "gn", "fgn", "fbm"] = "gn",
+        length: int = 10000,
+        a: float = 0,
+    ) -> Self:
+        """Generate diffusion process data.
+
+        Parameters
+        ----------
+        kind : str {"cn", "gn", "fgn", "fbm"}, optional, default "cn"
+            Type of diffusion noise to generate. If "cn", generate a
+            colored noise. If "gn", generate a Gaussian noise. If
+            "fbm", generate a fractional Gaussian noise with Hurst
+            index H=a. If "fbm", generate a fractional Brownian motion
+            with Hurst index H=a.
+        length : int, optional, default 10000
+            Length of time-series to generate.
+        a : float, optiona, default 0
+            Only used if `kind` is "fgn", "fbm", or "cn". If `kind` is
+            "fgn" or "fbm", this sets the Hurst index of the process.
+            If `kind` is "cn" this sets the index of the power law
+            spectrum for the noise, 1/(f^a).
+
+        Returns
+        -------
+        Self @ Loader
+            An instance of the Loader object.
+
+        """
+        if kind == "gn":
+            process = stochastic.noise.GaussianNoise()
+            self.data = process.sample(length)
+        if kind == "cn":
+            process = stochastic.noise.ColoredNoise(beta=a)
+            self.data = process.sample(length)
+        if kind == "fgn":
+            process = stochastic.noise.FractionalGaussianNoise(hurst=a)
+            self.data = process.sample(length)
+        if kind == "fbm":
+            process = stochastic.continuous.FractionalBrownianMotion(hurst=a)
+            self.data = process.sample(length)
         return self
 
     def read_data_file(self: Self, filepath: str, column_name: str) -> pl.DataFrame:
