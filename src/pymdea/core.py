@@ -7,7 +7,13 @@ from typing import Literal, Self
 import numpy as np
 import polars as pl
 from scipy import stats
+from scipy.optimize import curve_fit
 from tqdm import tqdm
+
+
+def _power_log(x: float, a: float, b: float) -> float:
+    """Log power law for curve fit."""
+    return (a * np.log(x)) + b
 
 
 class DeaLoader:
@@ -153,7 +159,11 @@ class DeaEngine:
                 applied to log-scale data. Prefer the more robust 'theilsen' or
                 'siegel' methods.""",
             )
-            coefficients = np.polyfit(np.log(length_slice), s_slice, 1)
+            coefficients = curve_fit(
+                f=_power_log,
+                xdata=length_slice,
+                ydata=s_slice,
+            )[0]  # 0 is coeffs, 1 is uncertainty, uncertainty not yet used
         if self.fit_method == "theilsen":
             coefficients = stats.theilslopes(s_slice, np.log(length_slice))
         if self.fit_method == "siegel":
