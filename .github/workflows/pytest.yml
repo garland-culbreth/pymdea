@@ -20,15 +20,14 @@ jobs:
         pip install logging
         pip install typing
         pip install pathlib
+        pip install stochastic
         pip install numpy
         pip install scipy
         pip install polars
         pip install matplotlib
         pip install seaborn
         pip install tqdm
-        pip install stochastic
         pip install pytest
     - name: Running tests with pytest
       run: |
         pytest
-  
