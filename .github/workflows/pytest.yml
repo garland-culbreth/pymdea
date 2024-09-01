@@ -1,33 +1,22 @@
 name: Pytest
-
-on: [push]
-
+on: push
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version:
+        - "3.11"
+        - "3.12"
     steps:
     - uses: actions/checkout@v4
+    - name: Set up uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install logging
-        pip install typing
-        pip install pathlib
-        pip install stochastic
-        pip install numpy
-        pip install scipy
-        pip install polars
-        pip install matplotlib
-        pip install seaborn
-        pip install tqdm
-        pip install pytest
-    - name: Running tests with pytest
-      run: |
-        pytest
+    - name: Install the project
+      run: uv sync --all-extras --dev
+    - name: Run tests
+      run: uv run pytest
