@@ -1,8 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "pymdea"
 version = "0.1.0"
-description = "Add your description here"
+description = "Modified diffusion entropy analysis; a temporal complexity analysis method"
+authors = [
+  {name = "Garland Culbreth", email = "culbreth.garland@gmail.com"},
+  {name = "Jacob Baxley"},
+  {name = "David Lambert"},
+]
+maintainers = [
+  {name = "Garland Culbreth", email = "culbreth.garland@gmail.com"},
+]
 readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.12"
 dependencies = [
     "logging>=0.4.9.6",
@@ -21,10 +34,21 @@ dependencies = [
     "mkdocstrings[python]>=0.25.2",
     "mkdocs-jupyter>=0.24.8",
 ]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[project.urls]
+Documentation = "https://garland-culbreth.github.io/pymdea"
+Repository = "https://github.com/garland-culbreth/pymdea"
+Issues = "https://github.com/garland-culbreth/pymdea/issues"
 
 [tool.ruff.lint]
 select = ["ALL"]
