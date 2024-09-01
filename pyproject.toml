@@ -16,7 +16,7 @@ maintainers = [
 ]
 readme = "README.md"
 license = {file = "LICENSE"}
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "logging>=0.4.9.6",
     "typing>=3.10.0.0",
