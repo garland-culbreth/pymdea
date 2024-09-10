@@ -147,8 +147,8 @@ class DeaEngine:
 
     def _get_events(self: Self) -> Self:
         """Record an event (1) when `series` changes value."""
-        no_lower_crossing = self.series[1:] < np.floor(self.series[:-1]) + 1
-        no_upper_crossing = self.series[1:] > np.ceil(self.series[:-1]) - 1
+        no_upper_crossing = self.series[1:] < np.floor(self.series[:-1]) + 1
+        no_lower_crossing = self.series[1:] > np.ceil(self.series[:-1]) - 1
         events = np.where(no_lower_crossing & no_upper_crossing, 0, 1)
         self.events = np.append([0], events)  # Event impossible at index 0
         return self
