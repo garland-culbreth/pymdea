@@ -140,9 +140,7 @@ class DeaEngine:
             self.data = self.data + np.abs(np.min(self.data))
         elif np.min(self.data) > 0:
             self.data = self.data - np.abs(np.min(self.data))
-        max_data = np.max(self.data)
-        min_data = np.min(self.data)
-        data_width = np.abs(max_data - min_data)
+        data_width = np.abs(self.data.max() - self.data.min())
         stripe_size = data_width / self.number_of_stripes
         self.series = self.data / stripe_size
         return self
