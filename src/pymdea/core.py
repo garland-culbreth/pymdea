@@ -147,15 +147,10 @@ class DeaEngine:
 
     def _get_events(self: Self) -> Self:
         """Record an event (1) when `series` changes value."""
-        events = np.zeros(len(self.series))
-        for i in range(1, len(self.series)):
-            if not (
-                self.series[i] < np.floor(self.series[i - 1]) + 1
-                and self.series[i] > np.ceil(self.series[i - 1]) - 1
-            ):
-                events[i] = 1
-        np.append(events, 0)
-        self.events = events
+        no_lower_crossing = self.series[1:] < np.floor(self.series[:-1]) + 1
+        no_upper_crossing = self.series[1:] > np.ceil(self.series[:-1]) - 1
+        events = np.where(no_lower_crossing & no_upper_crossing, 0, 1)
+        self.events = np.append([0], events)  # Event impossible at index 0
         return self
 
     def _make_trajectory(self: Self) -> Self:
