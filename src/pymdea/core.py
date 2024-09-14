@@ -266,10 +266,10 @@ class DeaEngine:
 
         Parameters
         ----------
-        fit_start : int
-            Array index at which to start linear fit.
-        fit_stop : int
-            Array index at which to stop linear fit.
+        fit_start : float
+            Fraction of maximum window length at which to start linear fit.
+        fit_stop : float
+            Fraction of maximum window length at which to stop linear fit.
         fit_method : str {"siegel", "theilsen", "ls"}, optional
             Linear fit method to use. By default "siegel"
         n_stripes : int, optional, default: 20
@@ -323,10 +323,10 @@ class DeaEngine:
 
         Parameters
         ----------
-        fit_start : int
-            Array index at which to start linear fit.
-        fit_stop : int
-            Array index at which to stop linear fit.
+        fit_start : float
+            Fraction of maximum window length at which to start linear fit.
+        fit_stop : float
+            Fraction of maximum window length at which to stop linear fit.
         fit_method : str {"siegel", "theilsen", "ls"}, optional
             Linear fit method to use. By default "siegel"
 
