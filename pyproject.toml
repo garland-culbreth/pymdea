@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pymdea"
-version = "0.1.0"
+version = "0.1.1"
 description = "Modified diffusion entropy analysis; a temporal complexity analysis method"
 authors = [
   {name = "Garland Culbreth", email = "culbreth.garland@gmail.com"},
