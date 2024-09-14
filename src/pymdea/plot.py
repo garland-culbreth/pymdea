@@ -51,7 +51,7 @@ class DeaPlotter:
             Height, in inches, of the figure.
 
         """
-        x_line = np.linspace(start=1, stop=len(self.window_lengths), num=3)
+        x_line = np.linspace(start=1, stop=np.max(self.window_lengths), num=3)
         fig, ax = plt.subplots(figsize=(fig_width, fig_height))
         ax.plot(
             self.window_lengths,
