@@ -170,7 +170,14 @@ class DeaEngine:
 
         """
         entropies = []
-        window_lengths = np.arange(1, int(window_stop * len(self.trajectory)), 1)
+        window_lengths = np.unique(
+            np.logspace(
+                start=0,
+                stop=np.log10(window_stop * len(self.trajectory)),
+                num=1000,
+                dtype=np.int32,
+            ),
+        )
         for window_length in tqdm(window_lengths):
             window_starts = np.arange(0, len(self.trajectory) - window_length, 1)
             window_ends = np.arange(window_length, len(self.trajectory), 1)
