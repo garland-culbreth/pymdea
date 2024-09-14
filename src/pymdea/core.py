@@ -170,7 +170,14 @@ class DeaEngine:
 
         """
         entropies = []
-        window_lengths = np.arange(1, int(window_stop * len(self.trajectory)), 1)
+        window_lengths = np.unique(
+            np.logspace(
+                start=0,
+                stop=np.log10(window_stop * len(self.trajectory)),
+                num=1000,
+                dtype=np.int32,
+            ),
+        )
         for window_length in tqdm(window_lengths):
             window_starts = np.arange(0, len(self.trajectory) - window_length, 1)
             window_ends = np.arange(window_length, len(self.trajectory), 1)
@@ -190,8 +197,10 @@ class DeaEngine:
 
     def _calculate_scaling(self: Self) -> Self:
         """Calculate scaling."""
-        s_slice = self.entropies[self.fit_start : self.fit_stop]
-        length_slice = self.window_lengths[self.fit_start : self.fit_stop]
+        start_index = np.floor(self.fit_start * len(self.window_lengths)).astype(int)
+        stop_index = np.floor(self.fit_stop * len(self.window_lengths)).astype(int)
+        s_slice = self.entropies[start_index:stop_index]
+        length_slice = self.window_lengths[start_index:stop_index]
         if self.fit_method == "ls":
             logging.warning(
                 """Least-squares linear fits can introduce systematic error when
