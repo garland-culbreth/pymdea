@@ -319,7 +319,7 @@ class DeaEngine:
         fit_stop: int,
         fit_method: Literal["siegel", "theilsen", "ls"] = "siegel",
     ) -> Self:
-        """Run a modified diffusion entropy analysis.
+        """Run a regular diffusion entropy analysis.
 
         Parameters
         ----------
