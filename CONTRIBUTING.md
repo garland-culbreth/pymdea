@@ -70,8 +70,8 @@ Emoji icons corresponding to the [standard acronyms](#standard-acronyms). Use th
 
 - `BLD`: 📦
 - `DOC`: 📝
-- `ENH`: 💡
-- `FIX`: 🧯
+- `ENH`: ✨
+- `FIX`: 🐞
 - `MNT`: 🛠️
 - `REL`: 🚀
 - `TST`: 🧪
