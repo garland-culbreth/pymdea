@@ -246,12 +246,13 @@ class DeaEngine:
 
     def print_result(self: Self) -> str:
         """Print out result of analysis."""
-        self.result = "--------------------------------- \n"
-        self.result = self.result + "result \n"
-        self.result = self.result + f" δ: {self.delta} \n"
-        self.result = self.result + f" μ (rule 1): {self.mu1} \n"
-        self.result = self.result + f" μ (rule 2): {self.mu2} \n"
-        self.result = self.result + "---------------------------------"
+        self.result = pl.DataFrame(
+            {
+                "δ": self.delta,
+                "μ (rule 1)": self.mu1,
+                "μ (rule 2)": self.mu2,
+            },
+        )
         print(self.result)  # noqa: T201
         return self
 
