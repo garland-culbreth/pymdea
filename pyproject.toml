@@ -33,6 +33,7 @@ dependencies = [
     "mkdocs-material>=9.5.33",
     "mkdocstrings[python]>=0.25.2",
     "mkdocs-jupyter>=0.24.8",
+    "pandas>2.2.2",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
