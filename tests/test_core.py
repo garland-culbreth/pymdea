@@ -121,7 +121,7 @@ class TestEngine:
         dea_loader = DeaLoader()
         dea_loader.make_sample_data(1000)
         dea_engine = DeaEngine(dea_loader)
-        dea_engine.analyze_with_stripes(fit_start=10, fit_stop=100)
+        dea_engine.analyze_with_stripes(fit_start=0.1, fit_stop=0.9)
         assert hasattr(dea_engine, "length_slice"), "Length slice is missing."
         assert hasattr(dea_engine, "fit_coefficients"), "Fit coefficients are missing."
         assert hasattr(dea_engine, "delta"), "Delta is missing."
@@ -144,7 +144,7 @@ class TestEngine:
         dea_loader = DeaLoader()
         dea_loader.make_sample_data(1000)
         dea_engine = DeaEngine(dea_loader)
-        dea_engine.analyze_with_stripes(fit_start=10, fit_stop=100)
+        dea_engine.analyze_with_stripes(fit_start=0.1, fit_stop=0.9)
         assert hasattr(dea_engine, "mu1"), "mu1 is missing"
         assert hasattr(dea_engine, "mu2"), "mu2 is missing"
         assert isinstance(dea_engine.mu1, float), "mu1 is not a float."
