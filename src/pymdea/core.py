@@ -10,7 +10,7 @@ import stochastic.processes.continuous
 import stochastic.processes.noise
 from scipy import stats
 from scipy.optimize import curve_fit
-from tqdm import tqdm
+from rich.progress import track
 
 
 def _power_log(x: float, a: float, b: float) -> float:
@@ -178,7 +178,7 @@ class DeaEngine:
                 dtype=np.int32,
             ),
         )
-        for window_length in tqdm(window_lengths):
+        for window_length in track(window_lengths):
             window_starts = np.arange(0, len(self.trajectory) - window_length, 1)
             window_ends = np.arange(window_length, len(self.trajectory), 1)
             displacements = (
