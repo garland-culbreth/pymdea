@@ -8,9 +8,9 @@ import numpy as np
 import polars as pl
 import stochastic.processes.continuous
 import stochastic.processes.noise
+from rich.progress import track
 from scipy import stats
 from scipy.optimize import curve_fit
-from rich.progress import track
 
 
 def _power_log(x: float, a: float, b: float) -> float:
