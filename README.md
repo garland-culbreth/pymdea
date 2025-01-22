@@ -31,7 +31,7 @@ A user guide is available in the [documentation](https://garland-culbreth.github
 [![polars](https://img.shields.io/badge/polars-CD792C?style=for-the-badge&logo=polars&logoColor=white)](https://pola.rs/)
 [![matplotlib](https://img.shields.io/badge/matplotlib-11557c?style=for-the-badge)](https://matplotlib.org/)
 [![seaborn](https://img.shields.io/badge/seaborn-444876?style=for-the-badge&logo=graph&logoColor=white)](https://seaborn.pydata.org/)
-[![tqdm](https://img.shields.io/badge/tqdm-FFC107?style=for-the-badge&logo=tqdm&logoColor=000000)](https://tqdm.github.io/)
+[![rich](https://img.shields.io/badge/rich-FAE742?style=for-the-badge&logo=rich&logoColor=000000)](https://github.com/Textualize/rich)
 [![pytest](https://img.shields.io/badge/pytest-%230A9EDC?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/en/stable/)
 [![ruff](https://img.shields.io/badge/ruff-D7FF64?style=for-the-badge&logo=ruff&logoColor=000000)](https://docs.astral.sh/ruff/)
 [![material for mkdocs](https://img.shields.io/badge/material_for_mkdocs-%23526CFE?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
