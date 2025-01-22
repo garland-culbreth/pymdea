@@ -21,7 +21,6 @@ dependencies = [
     "logging>=0.4.9.6",
     "typing>=3.10.0.0",
     "pathlib>=1.0.1",
-    "tqdm>=4.66.5",
     "pytest>=8.3.2",
     "numpy>=1.19.0",
     "stochastic>=0.6.0",
@@ -34,6 +33,8 @@ dependencies = [
     "mkdocstrings[python]>=0.25.2",
     "mkdocs-jupyter>=0.24.8",
     "pandas>2.2.2",
+    "rich>=13.9.4",
+    "ipywidgets>=8.1.5",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
