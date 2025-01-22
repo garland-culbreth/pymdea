@@ -8,9 +8,16 @@ import numpy as np
 import polars as pl
 import stochastic.processes.continuous
 import stochastic.processes.noise
+from rich.progress import (
+    BarColumn,
+    MofNCompleteColumn,
+    Progress,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 from scipy import stats
 from scipy.optimize import curve_fit
-from tqdm import tqdm
 
 
 def _power_log(x: float, a: float, b: float) -> float:
@@ -133,6 +140,15 @@ class DeaEngine:
     def __init__(self: Self, loader: DeaLoader) -> Self:
         """Run diffusion entropy analysis."""
         self.data = loader.data
+        self.progress = Progress(
+            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+            BarColumn(),
+            MofNCompleteColumn(),
+            TextColumn("eta"),
+            TimeRemainingColumn(),
+            TextColumn("elapsed"),
+            TimeElapsedColumn(),
+        )
 
     def _apply_stripes(self: Self) -> Self:
         """Round `data` to `stripes` evenly spaced intervals."""
@@ -178,19 +194,20 @@ class DeaEngine:
                 dtype=np.int32,
             ),
         )
-        for window_length in tqdm(window_lengths):
-            window_starts = np.arange(0, len(self.trajectory) - window_length, 1)
-            window_ends = np.arange(window_length, len(self.trajectory), 1)
-            displacements = (
-                self.trajectory[window_ends] - self.trajectory[window_starts]
-            )
-            counts, bin_edge = np.histogram(displacements, bins="doane")
-            counts = np.array(counts[counts != 0])
-            binsize = bin_edge[1] - bin_edge[0]
-            distribution = counts / np.sum(counts)
-            entropies.append(
-                -np.sum(distribution * np.log(distribution)) + np.log(binsize),
-            )
+        with self.progress as p:
+            for window_length in p.track(window_lengths):
+                window_starts = np.arange(0, len(self.trajectory) - window_length, 1)
+                window_ends = np.arange(window_length, len(self.trajectory), 1)
+                displacements = (
+                    self.trajectory[window_ends] - self.trajectory[window_starts]
+                )
+                counts, bin_edge = np.histogram(displacements, bins="doane")
+                counts = np.array(counts[counts != 0])
+                binsize = bin_edge[1] - bin_edge[0]
+                distribution = counts / np.sum(counts)
+                entropies.append(
+                    -np.sum(distribution * np.log(distribution)) + np.log(binsize),
+                )
         self.entropies = np.asarray(entropies)
         self.window_lengths = window_lengths
         return self
