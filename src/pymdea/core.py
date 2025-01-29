@@ -8,6 +8,8 @@ import numpy as np
 import polars as pl
 import stochastic.processes.continuous
 import stochastic.processes.noise
+from rich import box
+from rich.console import Console
 from rich.progress import (
     BarColumn,
     Progress,
@@ -16,6 +18,7 @@ from rich.progress import (
     TimeElapsedColumn,
     TimeRemainingColumn,
 )
+from rich.table import Table
 from scipy import stats
 from scipy.optimize import curve_fit
 
@@ -263,14 +266,13 @@ class DeaEngine:
 
     def print_result(self: Self) -> str:
         """Print out result of analysis."""
-        self.result = pl.DataFrame(
-            {
-                "δ": self.delta,
-                "μ (rule 1)": self.mu1,
-                "μ (rule 2)": self.mu2,
-            },
-        )
-        print(self.result)  # noqa: T201
+        self.result = Table(title="Result", box=box.SIMPLE)
+        self.result.add_column("δ")
+        self.result.add_column("μ (rule 1)")
+        self.result.add_column("μ (rule 2)")
+        self.result.add_row(f"{self.delta:.5f}", f"{self.mu1:.5f}", f"{self.mu2:.5f}")
+        console = Console()
+        console.print(self.result)
         return self
 
     def analyze_with_stripes(
