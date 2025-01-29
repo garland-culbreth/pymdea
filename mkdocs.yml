@@ -18,8 +18,6 @@ plugins:
               ignore_init_summary: true
             merge_init_into_class: true
             show_root_toc_entry: false
-  - mkdocs-jupyter:
-      ignore_h1_titles: True
 
 theme:
   name: material
@@ -57,6 +55,7 @@ theme:
     - toc.follow
     - search.suggest
     - search.highlight
+    - content.code.copy
 
 markdown_extensions:
   - admonition
@@ -77,7 +76,7 @@ nav:
   - Home:
     - index.md
   - User guide:
-    - user-guide/getting-started.ipynb
+    - user-guide/getting-started.md
     - user-guide/tuning.md
     - user-guide/interpreting.md
     - user-guide/further-reading.md
