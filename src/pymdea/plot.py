@@ -72,7 +72,7 @@ class DeaPlotter:
         ax.set_ylabel("$S(L)$")
         ax.legend(loc=0)
         sns.despine(trim=True)
-        plt.show(fig)
+        self.fig_s_vs_l = fig
 
     def mu_candidates(self: Self, fig_width: int = 4, fig_height: int = 3) -> None:
         """Plot the possible values of mu.
@@ -123,4 +123,4 @@ class DeaPlotter:
         ax.legend(loc=0)
         ax.grid(visible=True)
         sns.despine(left=True, bottom=True)
-        plt.show(fig)
+        self.fig_mu_candidates = fig
