@@ -52,7 +52,7 @@ class DeaPlotter:
 
         """
         x_line = np.linspace(start=1, stop=np.max(self.window_lengths), num=3)
-        fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+        fig, ax = plt.subplots(figsize=(fig_width, fig_height), layout="constrained")
         ax.plot(
             self.window_lengths,
             self.entropies,
@@ -92,7 +92,7 @@ class DeaPlotter:
         y2 = 1 / (x2 - 1)
         y3 = np.full(100, 0.5)
 
-        fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+        fig, ax = plt.subplots(figsize=(fig_width, fig_height), layout="constrained")
         ax.plot(x1, y1, color="k")
         ax.plot(x2, y2, color="k")
         ax.plot(x3, y3, color="k")
