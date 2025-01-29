@@ -10,8 +10,8 @@ import stochastic.processes.continuous
 import stochastic.processes.noise
 from rich.progress import (
     BarColumn,
-    MofNCompleteColumn,
     Progress,
+    SpinnerColumn,
     TextColumn,
     TimeElapsedColumn,
     TimeRemainingColumn,
@@ -141,9 +141,9 @@ class DeaEngine:
         """Run diffusion entropy analysis."""
         self.data = loader.data
         self.progress = Progress(
+            SpinnerColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
             BarColumn(),
-            MofNCompleteColumn(),
             TextColumn("eta"),
             TimeRemainingColumn(),
             TextColumn("elapsed"),
