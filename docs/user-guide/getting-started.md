@@ -93,11 +93,11 @@ dea_engine.analyze_with_stripes(fit_start=0.1, fit_stop=0.9, n_stripes=60)
 ```
 
 ```txt
-              Result                
-                                     
-  δ         μ (rule 1)   μ (rule 2)  
+              Result
+
+  δ         μ (rule 1)   μ (rule 2)
  ──────────────────────────────────────
-  0.50781   1.50781      2.96924     
+  0.50781   1.50781      2.96924
 ```
 
 ## Viewing results
