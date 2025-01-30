@@ -81,7 +81,7 @@ Emoji icons corresponding to the [standard acronyms](#standard-acronyms). Use th
 ```txt
 🧯FIX - Fix bug in some_function when some_parameter has forbidden value
 💡ENH - Support some new useful thing
-📝DOC - Correct some mis-spelled word on a page
+📝DOC - Correct some misspelled word on a page
 🛠️MNT - Change formatter rule
 ```
 

@@ -75,7 +75,7 @@ class DeaLoader:
             fractional Brownian motion with Hurst index H=`a`.
         length : int, optional, default 10000
             Length of time-series to generate.
-        a : float, optiona, default 0
+        a : float, optional, default 0
             Only used if `kind` is "fgn", "fbm", or "cn". If `kind` is
             "fgn" or "fbm", this sets the Hurst index of the process.
             If `kind` is "cn" this sets the index of the power law
