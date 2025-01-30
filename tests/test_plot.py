@@ -21,7 +21,8 @@ class TestPlotter:
         dea_plotter.s_vs_l()
         assert hasattr(dea_plotter, "fig_s_vs_l"), "fig_s_vs_l is missing"
         assert isinstance(
-            dea_plotter.fig_s_vs_l, plt.Figure,
+            dea_plotter.fig_s_vs_l,
+            plt.Figure,
         ), "fig_s_vs_l is not a matplotlib figure."
 
     def test_mu_candidates(self: Self) -> None:
@@ -34,7 +35,8 @@ class TestPlotter:
         dea_plotter.mu_candidates()
         assert hasattr(dea_plotter, "fig_mu_candidates"), "fig_mu_candidates is missing"
         assert isinstance(
-            dea_plotter.fig_mu_candidates, plt.Figure,
+            dea_plotter.fig_mu_candidates,
+            plt.Figure,
         ), "fig_mu_candidates is not a matplotlib figure."
 
 
