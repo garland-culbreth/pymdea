@@ -14,3 +14,7 @@ repos:
   hooks:
     - id: ruff  # Run the linter
     - id: ruff-format  # Run the formatter
+- repo: https://github.com/astral-sh/uv-pre-commit
+  rev: 0.5.25
+  hooks:
+    - id: uv-lock  # Keep uv.lock up to date with pyproject.toml
