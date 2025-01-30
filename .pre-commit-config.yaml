@@ -18,3 +18,7 @@ repos:
   rev: 0.5.25
   hooks:
     - id: uv-lock  # Keep uv.lock up to date with pyproject.toml
+- repo: https://github.com/crate-ci/typos
+  rev: v1.29.4
+  hooks:
+    - id: typos
