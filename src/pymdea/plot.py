@@ -1,6 +1,6 @@
 """Plotting functions."""
 
-from typing import Literal, Self
+from typing import Self
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,8 +15,7 @@ class DeaPlotter:
     def __init__(
         self: Self,
         model: DeaEngine,
-        theme: Literal["ticks", "whitegrid", "darkgrid"] = "ticks",
-        colors: Literal["muted", "deep", "Set2", "tab10"] = "muted",
+        theme: None | str = None,
     ) -> Self:
         """Plot DEA results.
 
@@ -24,15 +23,13 @@ class DeaPlotter:
         ----------
         model : Self@DeaEngine
             Object containing the results of a DEA analysis to be plotted.
-        theme : str {"ticks", "whitegrid", "darkgrid"}, optional, default: "ticks"
-            Name of a seaborn style. Passed through to
-            seaborn.set_theme().
-        colors : str {"muted", "deep", "Set2", "tab10"}, optional, default: "muted"
-            Name of a seaborn or matplotlib color palette. Passed
-            through to seaborn.set_theme().
+        theme : None | str, optional, default: None
+            Must be either None or a string corresponding to a
+            matplotlib.pyplot style.
 
         """
-        sns.set_theme(context="notebook", style=theme, palette=colors)
+        if theme is not None:
+            plt.style.use(style=theme)
         self.window_lengths = model.window_lengths
         self.entropies = model.entropies
         self.delta = model.fit_coefficients[0]
