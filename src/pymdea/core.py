@@ -366,6 +366,7 @@ class DeaEngine:
         https://arxiv.org/pdf/0706.1062.pdf.
 
         """
+        self.number_of_stripes = None
         self.trajectory = self.data
         self.fit_start = fit_start
         self.fit_stop = fit_stop
