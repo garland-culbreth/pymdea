@@ -30,6 +30,8 @@ class DeaPlotter:
         """
         if theme is not None:
             plt.style.use(style=theme)
+        self.data = model.data
+        self.number_of_stripes = model.number_of_stripes
         self.window_lengths = model.window_lengths
         self.entropies = model.entropies
         self.delta = model.fit_coefficients[0]
@@ -122,4 +124,37 @@ class DeaPlotter:
         ax.grid(visible=True)
         sns.despine(left=True, bottom=True)
         self.fig_mu_candidates = fig
+        return self
+
+    def data_series(self: Self, fig_width: int = 4, fig_height: int = 3) -> None:
+        """Plot the input data series, with stripes if present.
+
+        Parameters
+        ----------
+        fig_width : int, optional, default: 4
+            Width, in inches, of the figure.
+        fig_height : int, optional, default: 3
+            Height, in inches, of the figure.
+
+        """
+        series = self.data - self.data[0]  # Remove shift for plot
+        fig, ax = plt.subplots(figsize=(fig_width, fig_height), layout="constrained")
+        if self.number_of_stripes is not None:
+            stripes = np.linspace(
+                start=series.min(),
+                stop=series.max(),
+                num=self.number_of_stripes,
+            )
+            ax.hlines(
+                y=stripes,
+                xmin=0,
+                xmax=len(series),
+                color="gray",
+                linewidth=0.5,
+            )
+        ax.plot(series, linewidth=0.5)
+        ax.set_ylabel("Series")
+        ax.set_xlabel("Time")
+        sns.despine(trim=True)
+        self.fig_data_series = fig
         return self
