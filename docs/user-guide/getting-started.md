@@ -93,11 +93,10 @@ dea_engine.analyze_with_stripes(fit_start=0.1, fit_stop=0.9, n_stripes=60)
 ```
 
 ```txt
-              Result
-
-  δ         μ (rule 1)   μ (rule 2)
- ──────────────────────────────────────
-  0.50781   1.50781      2.96924
+100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ eta 0:00:00 elapsed 0:00:00
+δ         μ (rule 1)   μ (rule 2)   μ (rule 3)
+────────────────────────────────────────────────
+0.50781   1.50781      2.96924      1.49219
 ```
 
 ## Viewing results
@@ -122,4 +121,4 @@ It's also useful to quickly compare the results of the different rules for compu
 dea_plot.mu_candidates()
 ```
 
-![Figure displaying the theoretical relationship between scaling, delta, and inter-event time IPL index mu, according to the supported rules for computing mu](../assets/images/two-mu-rules.png)
+![Figure displaying the theoretical relationship between scaling, delta, and inter-event time IPL index mu, according to the supported rules for computing mu](../assets/images/mu-rules.png)
