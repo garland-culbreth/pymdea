@@ -217,12 +217,13 @@ class DeaEngine:
 
     def _calculate_scaling(self: Self) -> Self:
         """Calculate scaling."""
+        logger = logging.getLogger(__name__)
         start_index = np.floor(self.fit_start * len(self.window_lengths)).astype(int)
         stop_index = np.floor(self.fit_stop * len(self.window_lengths)).astype(int)
         s_slice = self.entropies[start_index:stop_index]
         length_slice = self.window_lengths[start_index:stop_index]
         if self.fit_method == "ls":
-            logging.warning(
+            logger.info(
                 """Least-squares linear fits can introduce systematic error when
                 applied to log-scale data. Prefer the more robust 'theilsen' or
                 'siegel' methods.""",
