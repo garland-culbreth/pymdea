@@ -36,6 +36,7 @@ class DeaPlotter:
         self.y_intercept = model.fit_coefficients[1]
         self.mu1 = model.mu1
         self.mu2 = model.mu2
+        self.mu3 = model.mu3
 
     def s_vs_l(self: Self, fig_width: int = 4, fig_height: int = 3) -> None:
         """Plot the slope of entropy vs window length.
@@ -112,6 +113,16 @@ class DeaPlotter:
             markeredgewidth=2,
             linestyle="none",
             label=f"$\\mu$ = {np.round(self.mu2, 2)}",
+        )
+        ax.plot(
+            self.mu3,
+            self.delta,
+            marker="o",
+            fillstyle="none",
+            markersize=5,
+            markeredgewidth=2,
+            linestyle="none",
+            label=f"$\\mu$ = {np.round(self.mu3, 2)}",
         )
         ax.set_xticks(ticks=np.linspace(1, 4, 7))
         ax.set_yticks(ticks=np.linspace(0, 1, 5))
