@@ -268,7 +268,7 @@ class DeaEngine:
 
     def print_result(self: Self) -> str:
         """Print out result of analysis."""
-        self.result = Table(title="Result", box=box.SIMPLE)
+        self.result = Table(box=box.SIMPLE)
         self.result.add_column("δ")
         self.result.add_column("μ (rule 1)")
         self.result.add_column("μ (rule 2)")
