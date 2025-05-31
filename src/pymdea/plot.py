@@ -38,7 +38,7 @@ class DeaPlotter:
         self.mu2 = model.mu2
         self.mu3 = model.mu3
 
-    def s_vs_l(self: Self, fig_width: int = 4, fig_height: int = 3) -> None:
+    def s_vs_l(self: Self, fig_width: int = 5, fig_height: int = 3) -> None:
         """Plot the slope of entropy vs window length.
 
         Parameters
@@ -68,11 +68,11 @@ class DeaPlotter:
         ax.set_xscale("log")
         ax.set_xlabel("$\\ln(L)$")
         ax.set_ylabel("$S(L)$")
-        ax.legend(loc=0)
+        ax.legend(loc="center left", bbox_to_anchor=(1.0, 0.5))
         sns.despine(trim=True)
         self.fig_s_vs_l = fig
 
-    def mu_candidates(self: Self, fig_width: int = 4, fig_height: int = 3) -> None:
+    def mu_candidates(self: Self, fig_width: int = 5, fig_height: int = 3) -> None:
         """Plot the possible values of mu.
 
         Parameters
@@ -128,7 +128,7 @@ class DeaPlotter:
         ax.set_yticks(ticks=np.linspace(0, 1, 5))
         ax.set_xlabel("$\\mu$")
         ax.set_ylabel("$\\delta$")
-        ax.legend(loc=0)
+        ax.legend(loc="center left", bbox_to_anchor=(1.0, 0.5))
         ax.grid(visible=True)
         sns.despine(left=True, bottom=True)
         self.fig_mu_candidates = fig
