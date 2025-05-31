@@ -263,6 +263,7 @@ class DeaEngine:
         """
         self.mu1 = 1 + self.delta
         self.mu2 = 1 + (1 / self.delta)
+        self.mu3 = 2 - self.delta
         return self
 
     def print_result(self: Self) -> str:
@@ -271,7 +272,13 @@ class DeaEngine:
         self.result.add_column("δ")
         self.result.add_column("μ (rule 1)")
         self.result.add_column("μ (rule 2)")
-        self.result.add_row(f"{self.delta:.5f}", f"{self.mu1:.5f}", f"{self.mu2:.5f}")
+        self.result.add_column("μ (rule 3)")
+        self.result.add_row(
+            f"{self.delta:.5f}",
+            f"{self.mu1:.5f}",
+            f"{self.mu2:.5f}",
+            f"{self.mu3:.5f}",
+        )
         console = Console()
         console.print(self.result)
         return self
