@@ -33,6 +33,7 @@ class DeaPlotter:
         self.data = model.data
         self.number_of_stripes = model.number_of_stripes
         self.window_lengths = model.window_lengths
+        self.events = model.events
         self.entropies = model.entropies
         self.delta = model.fit_coefficients[0]
         self.y_intercept = model.fit_coefficients[1]
@@ -166,6 +167,26 @@ class DeaPlotter:
         ax.plot(series, linewidth=0.5)
         ax.set_ylabel("Series")
         ax.set_xlabel("Time")
+        sns.despine(trim=True)
+        self.fig_data_series = fig
+        return self
+
+    def event_array(self: Self, fig_width: int = 4, fig_height: int = 3) -> None:
+        """Plot the array of event occurrences.
+
+        Parameters
+        ----------
+        fig_width : int, optional, default: 4
+            Width, in inches, of the figure.
+        fig_height : int, optional, default: 3
+            Height, in inches, of the figure.
+
+        """
+        fig, ax = plt.subplots(figsize=(fig_width, fig_height), layout="constrained")
+        ax.stem(self.events, markerfmt="", basefmt="")
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Event")
+        ax.set_yticks((0.0, 1.0))
         sns.despine(trim=True)
         self.fig_data_series = fig
         return self
