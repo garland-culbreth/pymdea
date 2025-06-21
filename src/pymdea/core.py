@@ -140,9 +140,28 @@ class DeaLoader:
 class DeaEngine:
     """Run diffusion entropy analysis."""
 
-    def __init__(self: Self, loader: DeaLoader) -> Self:
-        """Run diffusion entropy analysis."""
+    def __init__(
+        self: Self,
+        loader: DeaLoader,
+        hist_bins: int
+        | Literal["fd", "doane", "scott", "stone", "rice", "sturges"] = "doane",
+    ) -> Self:
+        """Run diffusion entropy analysis.
+
+        Parameters
+        ----------
+        loader : DeaLoader
+            An instance of the DeaLoader class containing data to be
+            analysed.
+        hist_bins : int | {"auto", "fd", "doane", "scott", "stone", "rice", "sturges"}
+            Number of bins, or method by which to calculate it, to use
+            for the histogram in the Shannon entropy calculation. Refer
+            to `numpy.histogram_bin_edges` for details about the
+            binning methods.
+
+        """
         self.data = loader.data
+        self.hist_bins = hist_bins
         self.progress = Progress(
             SpinnerColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
@@ -204,7 +223,7 @@ class DeaEngine:
                 displacements = (
                     self.trajectory[window_ends] - self.trajectory[window_starts]
                 )
-                counts, bin_edge = np.histogram(displacements, bins="doane")
+                counts, bin_edge = np.histogram(displacements, bins=self.hist_bins)
                 counts = np.array(counts[counts != 0])
                 binsize = bin_edge[1] - bin_edge[0]
                 distribution = counts / np.sum(counts)
