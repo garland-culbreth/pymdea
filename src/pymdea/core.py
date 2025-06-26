@@ -176,7 +176,7 @@ class DeaEngine:
             msg = (
                 "Parameter 'max_fit' must be less than "
                 f"window_stop * len(data) = {int(window_stop * len(loader.data))}, "
-                f"got: {window_stop}"
+                f"got: {max_fit}"
             )
             raise ValueError(msg)
         self.data = loader.data
