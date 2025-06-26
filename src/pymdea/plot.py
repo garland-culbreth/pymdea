@@ -66,8 +66,8 @@ class DeaPlotter:
             label=f"$\\delta = {np.round(self.delta, 3)}$",
         )
         ax.set_xscale("log")
-        ax.set_xlabel("$\\ln(L)$")
-        ax.set_ylabel("$S(L)$")
+        ax.set_xlabel("$t$")
+        ax.set_ylabel("$\\ln(x_\\theta(t))$")
         ax.legend(loc="center left", bbox_to_anchor=(1.0, 0.5))
         sns.despine(trim=True)
         self.fig_s_vs_l = fig

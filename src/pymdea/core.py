@@ -255,13 +255,13 @@ class DeaEngine:
                 displacements = (
                     self.trajectory[window_ends] - self.trajectory[window_starts]
                 )
-                counts, bin_edge = np.histogram(displacements, bins=self.hist_bins)
-                counts = np.array(counts[counts != 0])
-                binsize = bin_edge[1] - bin_edge[0]
-                distribution = counts / np.sum(counts)
-                entropies.append(
-                    -np.sum(distribution * np.log(distribution)) + np.log(binsize),
-                )
+                theta = 0.7
+                displacements = np.sort(displacements)
+                k = int(np.floor(theta * len(displacements) + 1))
+                if displacements[k] > 0:
+                    entropies.append(np.log(displacements[k]))
+                else:
+                    entropies.append(0)
         self.entropies = np.asarray(entropies)
         self.window_lengths = window_lengths
         return self
