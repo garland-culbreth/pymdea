@@ -1,8 +1,10 @@
 """Tests for the core methods."""
 
+import re
 from typing import Self
 
 import numpy as np
+import pytest
 
 from src.pymdea.core import DeaEngine, DeaLoader
 
@@ -31,6 +33,41 @@ class TestLoader:
 
 class TestEngine:
     """Tests for the DeaEngine."""
+
+    def test_max_fit_too_large(self: Self) -> None:
+        """Test that exception is raised if max_fit is too large."""
+        dea_loader = DeaLoader()
+        dea_loader.make_sample_data(1000)
+        too_large = 1000000
+        expect_msg = re.escape(
+            "Parameter 'max_fit' must be less than "
+            f"window_stop * len(data) = {int(0.2 * len(dea_loader.data))}, "
+            f"got: {too_large}",
+        )
+        with pytest.raises(ValueError, match=expect_msg):
+            _ = DeaEngine(dea_loader, window_stop=0.2, max_fit=too_large)
+
+    def test_window_stop_too_large(self: Self) -> None:
+        """Test that exception is raised if window_stop is too large."""
+        dea_loader = DeaLoader()
+        dea_loader.make_sample_data(1000)
+        too_large = 1.0001
+        expect_msg = re.escape(
+            f"Parameter 'window_stop' must be in (0, 1], got: {too_large}",
+        )
+        with pytest.raises(ValueError, match=expect_msg):
+            _ = DeaEngine(dea_loader, window_stop=too_large)
+
+    def test_window_stop_too_small(self: Self) -> None:
+        """Test that exception is raised if window_stop is too small."""
+        dea_loader = DeaLoader()
+        dea_loader.make_sample_data(1000)
+        too_small = 0.0
+        expect_msg = re.escape(
+            f"Parameter 'window_stop' must be in (0, 1], got: {too_small}",
+        )
+        with pytest.raises(ValueError, match=expect_msg):
+            _ = DeaEngine(dea_loader, window_stop=too_small)
 
     def test_apply_stripes(self: Self) -> None:
         """Test the _apply_stripes method."""
