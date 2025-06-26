@@ -145,6 +145,7 @@ class DeaEngine:
         loader: DeaLoader,
         hist_bins: int
         | Literal["fd", "doane", "scott", "stone", "rice", "sturges"] = "doane",
+        window_stop: float = 0.25,
     ) -> Self:
         """Run diffusion entropy analysis.
 
@@ -158,10 +159,18 @@ class DeaEngine:
             for the histogram in the Shannon entropy calculation. Refer
             to `numpy.histogram_bin_edges` for details about the
             binning methods.
+        window_stop : float
+            Proportion of data length at which to cap window length.
+            For example, if set to 0.25, 0.25 * len(data) will be the
+            maximum window length. Must be a float in (0, 1].
 
         """
+        if window_stop <= 0 or window_stop > 1:
+            msg = f"Parameter 'window_stop' must be in (0, 1], got: {window_stop}"
+            raise ValueError(msg)
         self.data = loader.data
         self.hist_bins = hist_bins
+        self.window_stop = window_stop
         self.progress = Progress(
             SpinnerColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
@@ -196,7 +205,7 @@ class DeaEngine:
         self.trajectory = np.cumsum(self.events)
         return self
 
-    def _calculate_entropy(self: Self, window_stop: float = 0.25) -> Self:
+    def _calculate_entropy(self: Self) -> Self:
         """Calculate the Shannon Entropy of the diffusion trajectory.
 
         Parameters
@@ -211,7 +220,7 @@ class DeaEngine:
         window_lengths = np.unique(
             np.logspace(
                 start=0,
-                stop=np.log10(window_stop * len(self.trajectory)),
+                stop=np.log10(self.window_stop * len(self.trajectory)),
                 num=1000,
                 dtype=np.int32,
             ),
