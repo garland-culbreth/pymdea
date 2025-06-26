@@ -146,6 +146,7 @@ class DeaEngine:
         hist_bins: int
         | Literal["fd", "doane", "scott", "stone", "rice", "sturges"] = "doane",
         window_stop: float = 0.25,
+        max_fit: int = 250,
     ) -> Self:
         """Run diffusion entropy analysis.
 
@@ -163,14 +164,25 @@ class DeaEngine:
             Proportion of data length at which to cap window length.
             For example, if set to 0.25, 0.25 * len(data) will be the
             maximum window length. Must be a float in (0, 1].
+        max_fit : int
+            Maximum number of window lengths to use and fit over.
+            Window lengths will be evenly spaced in log-scale.
 
         """
         if window_stop <= 0 or window_stop > 1:
             msg = f"Parameter 'window_stop' must be in (0, 1], got: {window_stop}"
             raise ValueError(msg)
+        if max_fit > int(np.floor(window_stop * len(loader.data))):
+            msg = (
+                "Parameter 'max_fit' must be less than "
+                f"window_stop * len(data) = {int(window_stop * len(loader.data))}, "
+                f"got: {window_stop}"
+            )
+            raise ValueError(msg)
         self.data = loader.data
         self.hist_bins = hist_bins
         self.window_stop = window_stop
+        self.max_fit = max_fit
         self.progress = Progress(
             SpinnerColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
