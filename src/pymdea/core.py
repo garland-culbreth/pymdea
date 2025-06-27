@@ -144,9 +144,7 @@ class DeaEngine:
     def __init__(
         self: Self,
         loader: DeaLoader,
-        hist_bins: int
-        | Literal["fd", "doane", "scott", "stone", "rice", "sturges"] = "doane",
-        windows: int = 250,
+        theta: float = 0.6,
         window_stop: float = 0.25,
     ) -> Self:
         """Run diffusion entropy analysis.
@@ -156,11 +154,9 @@ class DeaEngine:
         loader : DeaLoader
             An instance of the DeaLoader class containing data to be
             analysed.
-        hist_bins : int | {"auto", "fd", "doane", "scott", "stone", "rice", "sturges"}
-            Number of bins, or method by which to calculate it, to use
-            for the histogram in the Shannon entropy calculation. Refer
-            to `numpy.histogram_bin_edges` for details about the
-            binning methods.
+        theta : float
+            The critical value to compute the percentile from. Must be
+            a float in (0, 1).
         window_stop : float
             Proportion of data length at which to cap window length.
             For example, if set to 0.25, 0.25 * len(data) will be the
@@ -190,7 +186,7 @@ class DeaEngine:
             )
             self.log.warning(msg)
         self.data = loader.data
-        self.hist_bins = hist_bins
+        self.theta = theta
         self.window_stop = window_stop
         self.max_fit = windows
         self.progress = Progress(
@@ -255,9 +251,8 @@ class DeaEngine:
                 displacements = (
                     self.trajectory[window_ends] - self.trajectory[window_starts]
                 )
-                theta = 0.7
                 displacements = np.sort(displacements)
-                k = int(np.floor(theta * len(displacements) + 1))
+                k = int(np.floor(self.theta * len(displacements) + 1))
                 if displacements[k] > 0:
                     entropies.append(np.log(displacements[k]))
                 else:
