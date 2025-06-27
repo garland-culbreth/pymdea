@@ -10,6 +10,7 @@ import stochastic.processes.continuous
 import stochastic.processes.noise
 from rich import box
 from rich.console import Console
+from rich.logging import RichHandler
 from rich.progress import (
     BarColumn,
     Progress,
@@ -169,18 +170,25 @@ class DeaEngine:
             Window lengths will be evenly spaced in log-scale.
 
         """
+        console = Console()
+        logging.basicConfig(
+            level="INFO",
+            format="%(funcName)s: %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+            handlers=[RichHandler(console=console)],
+        )
+        self.log = logging.getLogger("rich")
         if window_stop <= 0 or window_stop > 1:
             msg = f"Parameter 'window_stop' must be in (0, 1], got: {window_stop}"
             raise ValueError(msg)
         n_windows = int(np.floor(window_stop * len(loader.data)))
         if max_fit > n_windows:
-            logger = logging.getLogger(__name__)
             msg = (
                 f"Parameter max_fit={max_fit} longer than "
                 f"window_stop * len(data) = {n_windows}, "
                 f"{n_windows} will be used"
             )
-            logger.info(msg)
+            self.log.warning(msg)
         self.data = loader.data
         self.hist_bins = hist_bins
         self.window_stop = window_stop
@@ -193,6 +201,7 @@ class DeaEngine:
             TimeRemainingColumn(),
             TextColumn("elapsed"),
             TimeElapsedColumn(),
+            console=console,
         )
 
     def _apply_stripes(self: Self) -> Self:
@@ -259,16 +268,15 @@ class DeaEngine:
 
     def _calculate_scaling(self: Self) -> Self:
         """Calculate scaling."""
-        logger = logging.getLogger(__name__)
         start_index = np.floor(self.fit_start * len(self.window_lengths)).astype(int)
         stop_index = np.floor(self.fit_stop * len(self.window_lengths)).astype(int)
         s_slice = self.entropies[start_index:stop_index]
         length_slice = self.window_lengths[start_index:stop_index]
         if self.fit_method == "ls":
-            logger.info(
-                """Least-squares linear fits can introduce systematic error when
-                applied to log-scale data. Prefer the more robust 'theilsen' or
-                'siegel' methods.""",
+            self.log.warning(
+                "Least-squares linear fits can introduce systematic error when "
+                "applied to log-scale data. Prefer the more robust 'theilsen' "
+                "or 'siegel' methods.",
             )
             coefficients = curve_fit(
                 f=_power_log,
