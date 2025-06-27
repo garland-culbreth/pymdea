@@ -172,13 +172,15 @@ class DeaEngine:
         if window_stop <= 0 or window_stop > 1:
             msg = f"Parameter 'window_stop' must be in (0, 1], got: {window_stop}"
             raise ValueError(msg)
-        if max_fit > int(np.floor(window_stop * len(loader.data))):
+        n_windows = int(np.floor(window_stop * len(loader.data)))
+        if max_fit > n_windows:
+            logger = logging.getLogger(__name__)
             msg = (
-                "Parameter 'max_fit' must be less than "
-                f"window_stop * len(data) = {int(window_stop * len(loader.data))}, "
-                f"got: {max_fit}"
+                f"Parameter max_fit={max_fit} longer than "
+                f"window_stop * len(data) = {n_windows}, "
+                f"{n_windows} will be used"
             )
-            raise ValueError(msg)
+            logger.info(msg)
         self.data = loader.data
         self.hist_bins = hist_bins
         self.window_stop = window_stop
