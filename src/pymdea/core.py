@@ -244,7 +244,7 @@ class DeaEngine:
             np.logspace(
                 start=0,
                 stop=np.log10(self.window_stop * len(self.trajectory)),
-                num=1000,
+                num=self.max_fit,
                 dtype=np.int32,
             ),
         )
