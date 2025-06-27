@@ -13,13 +13,16 @@ For further details about the method and how it works, please see [Culbreth, G.,
 
 ## Installation and use
 
-The pymdea package is available on pypi and can be installed with pip:
-```bash
-pip install pymdea
-```
-pymdea can also be installed with [uv](https://docs.astral.sh/uv/#python-management)
+The pymdea package is available on pypi and can be installed with [uv](https://docs.astral.sh/uv/#python-management):
+
 ```bash
 uv add pymdea
+```
+
+or with pip:
+
+```bash
+pip install pymdea
 ```
 
 A user guide is available in the [documentation](https://garland-culbreth.github.io/pymdea/).
