@@ -89,7 +89,7 @@ The `DeaEngine` class from `pymdea.core` contains the methods for analyzing data
 
 ```py
 dea_engine = DeaEngine(dea_loader)
-dea_engine.analyze_with_stripes(fit_start=0.1, fit_stop=0.9, n_stripes=60)
+dea_engine.analyze_with_stripes(fit_start=0.1, fit_stop=0.9, stripes=60)
 ```
 
 ```txt

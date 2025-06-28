@@ -146,8 +146,8 @@ class DeaEngine:
         loader: DeaLoader,
         hist_bins: int
         | Literal["fd", "doane", "scott", "stone", "rice", "sturges"] = "doane",
+        windows: int = 250,
         window_stop: float = 0.25,
-        max_fit: int = 250,
     ) -> Self:
         """Run diffusion entropy analysis.
 
@@ -165,8 +165,8 @@ class DeaEngine:
             Proportion of data length at which to cap window length.
             For example, if set to 0.25, 0.25 * len(data) will be the
             maximum window length. Must be a float in (0, 1].
-        max_fit : int
-            Maximum number of window lengths to use and fit over.
+        windows : int
+            Number of window lengths to use and fit over.
             Window lengths will be evenly spaced in log-scale.
 
         """
@@ -182,9 +182,9 @@ class DeaEngine:
             msg = f"Parameter 'window_stop' must be in (0, 1], got: {window_stop}"
             raise ValueError(msg)
         n_windows = int(np.floor(window_stop * len(loader.data)))
-        if max_fit > n_windows:
+        if windows > n_windows:
             msg = (
-                f"Parameter max_fit={max_fit} longer than "
+                f"Parameter max_fit={windows} longer than "
                 f"window_stop * len(data) = {n_windows}, "
                 f"{n_windows} will be used"
             )
@@ -192,7 +192,7 @@ class DeaEngine:
         self.data = loader.data
         self.hist_bins = hist_bins
         self.window_stop = window_stop
-        self.max_fit = max_fit
+        self.max_fit = windows
         self.progress = Progress(
             SpinnerColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
@@ -338,7 +338,7 @@ class DeaEngine:
         fit_start: int,
         fit_stop: int,
         fit_method: Literal["siegel", "theilsen", "ls"] = "siegel",
-        n_stripes: int = 20,
+        stripes: int = 20,
     ) -> Self:
         """Run a modified diffusion entropy analysis.
 
@@ -350,7 +350,7 @@ class DeaEngine:
             Fraction of maximum window length at which to stop linear fit.
         fit_method : str {"siegel", "theilsen", "ls"}, optional
             Linear fit method to use. By default "siegel"
-        n_stripes : int, optional, default: 20
+        stripes : int, optional, default: 20
             Number of stripes to apply to input time-series during
             analysis.
 
@@ -376,10 +376,10 @@ class DeaEngine:
         https://arxiv.org/pdf/0706.1062.pdf.
 
         """
-        if n_stripes < 2:  # noqa: PLR2004
+        if stripes < 2:  # noqa: PLR2004
             msg = "n_stripes must be greater than 1"
             raise ValueError(msg)
-        self.number_of_stripes = n_stripes
+        self.number_of_stripes = stripes
         self.fit_start = fit_start
         self.fit_stop = fit_stop
         self.fit_method = fit_method
