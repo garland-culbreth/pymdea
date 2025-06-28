@@ -297,6 +297,7 @@ class DeaEngine:
 
         - mu1 is the index calculated by the rule `1 + delta`.
         - mu2 is the index calculated by the rule `1 + (1 / delta)`.
+        - mu3 is the index calculated by the rule `2 - delta`.
 
         Returns
         -------
