@@ -146,6 +146,7 @@ class DeaEngine:
         loader: DeaLoader,
         theta: float = 0.6,
         window_stop: float = 0.25,
+        windows: int = 250,
     ) -> Self:
         """Run diffusion entropy analysis.
 
