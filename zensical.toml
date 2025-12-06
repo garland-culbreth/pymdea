@@ -1,0 +1,74 @@
+[project]
+site_name = "pymdea"
+repo_url = "https://github.com/garland-culbreth/pymdea"
+repo_name = "pymdea"
+extra_javascript = [
+    "javascripts/mathjax.js",
+    "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"
+]
+
+[project.theme]
+font.text = "Inter"
+font.code = "JetBrains Mono"
+features = [
+    "navigation.instant",
+    "navigation.instant.progress",
+    "navigation.tabs",
+    "navigation.top",
+    "search.highlight",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+primary = "blue grey"
+accent = "indigo"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+primary = "blue grey"
+accent = "indigo"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+primary = "blue grey"
+accent = "indigo"
+
+nav = [
+    { "Home" = "index.md" },
+    { "User guide" = [
+        "user-guide/getting-started.md",
+        "user-guide/tuning.md",
+        "user-guide/interpreting.md",
+        "user-guide/further-reading.md",
+    ] },
+    { "API reference" = [
+        "api-reference/core.md",
+        "api-reference/plot.md",
+    ] },
+]
+
+## This was in the guide but breaks admonitions, and math seems to redner ok without it
+# [project.markdown_extensions.pymdownx.arithmatex]
+# generic = true
+
+[project.plugins.mkdocstrings.handlers.python]
+inventories = ["https://docs.python.org/3/objects.inv"]
+paths = ["."]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+docstring_style = "numpy"
+docstring_section_style = "spacy"
+inherited_members = true
+merge_init_into_class = true
+show_symbol_type_heading = true
+show_symbol_type_toc = true
+show_root_heading = false
+show_source = true

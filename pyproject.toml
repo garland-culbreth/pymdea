@@ -29,12 +29,12 @@ dependencies = [
     "seaborn>=0.13.2",
     "scipy>=1.14.1",
     "ipykernel>=6.29.5",
-    "mkdocs-material>=9.5.33",
-    "mkdocstrings[python]>=0.25.2",
     "pandas>2.2.2",
     "rich>=13.9.4",
     "ipywidgets>=8.1.5",
     "pre-commit>=4.1.0",
+    "zensical>=0.0.11",
+    "mkdocstrings-python>=2.0.1",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
