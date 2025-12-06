@@ -1,7 +1,7 @@
 # Diffusion entropy analysis
 
 [![pytest status](https://img.shields.io/github/actions/workflow/status/garland-culbreth/pymdea/pytest.yml?style=flat-square&logo=github&&label=tests&logoColor=white&labelColor=393f46&color=46954a)](https://github.com/garland-culbreth/pymdea/actions/workflows/pytest.yml)
-[![mkdocs status](https://img.shields.io/github/actions/workflow/status/garland-culbreth/pymdea/mkdocs.yml?style=flat-square&logo=github&logoColor=white&label=docs&labelColor=393f46&color=46954a)](https://github.com/garland-culbreth/pymdea/actions/workflows/mkdocs.yml)
+[![docs status](https://img.shields.io/github/actions/workflow/status/garland-culbreth/pymdea/docs.yml?style=flat-square&logo=github&logoColor=white&label=docs&labelColor=393f46&color=46954a)](https://github.com/garland-culbreth/pymdea/actions/workflows/mkdocs.yml)
 [![python versions](https://img.shields.io/badge/3.11_%7C_3.12_%7C_3.13-3776AB?style=flat-square&logo=python&logoColor=ffffff&label=python&labelColor=393f46)](https://github.com/garland-culbreth/pymdea)
 [![pypi version](https://img.shields.io/pypi/v/pymdea?style=flat-square&logo=pypi&logoColor=ffffff&labelColor=393f46)](https://pypi.org/project/pymdea/)
 [![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=flat-square&labelColor=393f46)](https://github.com/astral-sh/ruff)
@@ -39,3 +39,4 @@ A user guide is available in the [documentation](https://garland-culbreth.github
 [![ruff](https://img.shields.io/badge/ruff-D7FF64?style=for-the-badge&logo=ruff&logoColor=000000)](https://docs.astral.sh/ruff/)
 [![material for mkdocs](https://img.shields.io/badge/material_for_mkdocs-%23526CFE?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
 [![mkdocstrings](https://img.shields.io/badge/mkdocstrings-%23526CFE?style=for-the-badge)](https://mkdocstrings.github.io/)
+
