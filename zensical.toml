@@ -26,7 +26,6 @@ font.code = "JetBrains Mono"
 features = [
     "navigation.instant",
     "navigation.instant.progress",
-    "navigation.tabs",
     "navigation.top",
     "search.highlight",
 ]
