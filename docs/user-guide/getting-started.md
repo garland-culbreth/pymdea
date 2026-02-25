@@ -2,16 +2,16 @@
 
 ## Setting up
 
-pymdea is [available on PyPI](https://pypi.org/project/pymdea) and can be installed with:
-
-```bash
-pip install pymdea
-```
-
-or can be installed from PyPI with [uv](https://docs.astral.sh/uv):
+pymdea is [available on PyPI](https://pypi.org/project/pymdea) and can be installed with [uv](https://docs.astral.sh/uv):
 
 ```bash
 uv add pymdea
+```
+
+or with pip:
+
+```bash
+pip install pymdea
 ```
 
 ??? abstract "Building from source with uv"
