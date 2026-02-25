@@ -336,8 +336,8 @@ class DeaEngine:
 
     def analyze_with_stripes(
         self: Self,
-        fit_start: int,
-        fit_stop: int,
+        fit_start: float,
+        fit_stop: float,
         fit_method: Literal["siegel", "theilsen", "ls"] = "siegel",
         stripes: int = 20,
     ) -> Self:
