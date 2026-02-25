@@ -6,6 +6,19 @@ extra_javascript = [
     "javascripts/mathjax.js",
     "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"
 ]
+nav = [
+    { "Home" = "index.md" },
+    { "User guide" = [
+        "user-guide/getting-started.md",
+        "user-guide/tuning.md",
+        "user-guide/interpreting.md",
+        "user-guide/further-reading.md",
+    ] },
+    { "API reference" = [
+        "api-reference/core.md",
+        "api-reference/plot.md",
+    ] },
+]
 
 [project.theme]
 font.text = "Inter"
@@ -13,7 +26,6 @@ font.code = "JetBrains Mono"
 features = [
     "navigation.instant",
     "navigation.instant.progress",
-    "navigation.tabs",
     "navigation.top",
     "search.highlight",
 ]
@@ -40,20 +52,6 @@ toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
 primary = "blue grey"
 accent = "indigo"
-
-nav = [
-    { "Home" = "index.md" },
-    { "User guide" = [
-        "user-guide/getting-started.md",
-        "user-guide/tuning.md",
-        "user-guide/interpreting.md",
-        "user-guide/further-reading.md",
-    ] },
-    { "API reference" = [
-        "api-reference/core.md",
-        "api-reference/plot.md",
-    ] },
-]
 
 ## This was in the guide but breaks admonitions, and math seems to redner ok without it
 # [project.markdown_extensions.pymdownx.arithmatex]
