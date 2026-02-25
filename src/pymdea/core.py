@@ -394,8 +394,8 @@ class DeaEngine:
 
     def analyze_without_stripes(
         self: Self,
-        fit_start: int,
-        fit_stop: int,
+        fit_start: float,
+        fit_stop: float,
         fit_method: Literal["siegel", "theilsen", "ls"] = "siegel",
     ) -> Self:
         """Run a regular diffusion entropy analysis.
