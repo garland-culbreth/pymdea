@@ -55,6 +55,9 @@ Issues = "https://github.com/garland-culbreth/pymdea/issues"
 
 [tool.ruff.lint]
 select = ["ALL"]
+ignore = [
+    "CPY001"
+]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["D104"]
