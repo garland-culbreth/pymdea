@@ -35,6 +35,7 @@ dependencies = [
     "pre-commit>=4.1.0",
     "zensical>=0.0.11",
     "mkdocstrings-python>=2.0.1",
+    "ruff>=0.16.0",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -54,6 +55,9 @@ Issues = "https://github.com/garland-culbreth/pymdea/issues"
 
 [tool.ruff.lint]
 select = ["ALL"]
+ignore = [
+    "CPY001"
+]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["D104"]

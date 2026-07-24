@@ -15,7 +15,7 @@ class DeaPlotter:
     def __init__(
         self: Self,
         model: DeaEngine,
-        theme: None | str = None,
+        theme: str | None = None,
     ) -> Self:
         """Plot DEA results.
 
