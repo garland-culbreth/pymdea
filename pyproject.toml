@@ -37,6 +37,8 @@ dependencies = [
     "mkdocstrings-python>=2.0.1",
     "ruff>=0.16.0",
     "tornado>=6.5.8",
+    "pillow>=13.0.0",
+    "virtualenv>=21.14.2",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
