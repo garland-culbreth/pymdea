@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pymdea"
-version = "0.5.3"
+version = "0.5.4"
 description = "Modified diffusion entropy analysis; a temporal complexity analysis method"
 authors = [
   {name = "Garland Culbreth", email = "culbreth.garland@gmail.com"},
@@ -18,7 +18,6 @@ readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.11"
 dependencies = [
-    "typing>=3.10.0.0",
     "pathlib>=1.0.1",
     "pytest>=8.3.2",
     "numpy>=1.19.0",
